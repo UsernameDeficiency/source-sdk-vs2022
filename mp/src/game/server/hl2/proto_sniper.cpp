@@ -800,7 +800,6 @@ void CProtoSniper::PaintTarget( const Vector &vecTarget, float flPaintTime )
 
 	GetPaintAim( m_vecPaintStart, vecTarget, clamp(P,0.0f,1.0f), &vecCurrentDir );
 
-#if 1
 #define THRESHOLD 0.8f
 	float flNoiseScale;
 	
@@ -821,7 +820,6 @@ void CProtoSniper::PaintTarget( const Vector &vecTarget, float flPaintTime )
 	vecCurrentDir.x += flNoiseScale * ( sin( 3 * M_PI * gpGlobals->curtime ) * 0.0006 );
 	vecCurrentDir.y += flNoiseScale * ( sin( 2 * M_PI * gpGlobals->curtime + 0.5 * M_PI ) * 0.0006 );
 	vecCurrentDir.z += flNoiseScale * ( sin( 1.5 * M_PI * gpGlobals->curtime + M_PI ) * 0.0006 );
-#endif
 
 	trace_t tr;
 
@@ -3349,100 +3347,6 @@ bool CSniperBullet::Start( const Vector &vecOrigin, const Vector &vecTarget, CBa
 	m_fActive = true;
 	m_bDirectShot = bDirectShot;
 	return true;
-
-/*
-	int i;
-
-	// Try to find all of the things the bullet can go through along the way.
-	//-------------------------------
-	//-------------------------------
-	m_vecDir = vecTarget - vecOrigin;
-	VectorNormalize( m_vecDir );
-
-	trace_t	tr;
-
-	
-	// Elapsed time counts how long the bullet is in motion through this simulation.
-	float flElapsedTime = 0;
-
-	for( i = 0 ; i < NUM_PENETRATIONS ; i++ )
-	{
-		// Trace to the target. 
-		UTIL_TraceLine( GetAbsOrigin(), vecTarget, MASK_SHOT, this, COLLISION_GROUP_NONE, &tr );
-
-		flShotDist = (tr.endpos - GetAbsOrigin()).Length();
-
-		// Record the two endpoints of the segment and the time at which this bullet hits,
-		// and the time at which it's supposed to hit its mark.
-		m_ImpactTime[ i ] = flElapsedTime + ( flShotDist / GetBulletSpeed() );
-		m_vecStart[ i ] = tr.startpos;
-		m_vecEnd[ i ] = tr.endpos;
-
-		// The elapsed time is now pushed forward by how long it takes the bullet
-		// to travel through this segment.
-		flElapsedTime += ( flShotDist / GetBulletSpeed() );
-
-		// Never let gpGlobals->curtime get added to the elapsed time!
-		m_ImpactTime[ i ] += gpGlobals->curtime;
-
-		CBaseEntity *pEnt;
-
-		pEnt = tr.m_pEnt;
-
-		if( !pEnt												||
-			pEnt->MyNPCPointer()								|| 
-			UTIL_DistApprox2D( tr.endpos, vecTarget ) <= 4		||
-			FClassnameIs( pEnt, "prop_physics" ) )
-		{
-			// If we're close to the target, assume the shot is going to hit
-			// the target and stop penetrating.
-			//
-			// If we're going to hit an NPC, stop penetrating.
-			//
-			// If we hit a physics prop, stop penetrating.
-			//
-			// Otherwise, keep looping.
-			break;
-		}
-
-		// We're going to try to penetrate whatever the bullet has hit. 
-
-		// Push through the object by the penetration distance, then trace back.
-		Vector vecCursor;
-
-		vecCursor = tr.endpos;
-		vecCursor += m_vecDir * PENETRATION_THICKNESS;
-
-		UTIL_TraceLine( vecCursor, vecCursor + m_vecDir * -2, MASK_SHOT, this, COLLISION_GROUP_NONE, &tr );
-
-#if 1
-		if( tr.startsolid )
-		{
-			// The cursor is inside the solid. Solid is too thick to penetrate.
-#ifdef SNIPER_DEBUG
-			Msg( "SNIPER STARTSOLID\n" );
-#endif
-			break;
-		}
-#endif
-		
-		// Now put the bullet at this point and continue.
-		UTIL_SetOrigin( this, vecCursor );
-	}
-	//-------------------------------
-	//-------------------------------
-*/	
-	
-
-/*
-#ifdef SNIPER_DEBUG
-	Msg( "PENETRATING %d items", i );
-#endif // SNIPER_DEBUG
-
-#ifdef SNIPER_DEBUG
-	Msg( "Dist: %f Travel Time: %f\n", flShotDist, m_ImpactTime );
-#endif // SNIPER_DEBUG
-*/
 }
 
 

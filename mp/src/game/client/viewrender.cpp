@@ -5347,7 +5347,6 @@ void CBaseWorldView::SSAO_DepthPass()
 		return;
 	}
 
-#if 1
 	VPROF_BUDGET( "CSimpleWorldView::SSAO_DepthPass", VPROF_BUDGETGROUP_SHADOW_DEPTH_TEXTURING );
 
 	int savedViewID = g_CurrentViewID;
@@ -5397,7 +5396,6 @@ void CBaseWorldView::SSAO_DepthPass()
 	pRenderContext.SafeRelease();
 
 	g_CurrentViewID = savedViewID;
-#endif
 }
 
 

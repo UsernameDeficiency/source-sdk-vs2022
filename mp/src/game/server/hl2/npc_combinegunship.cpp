@@ -1441,12 +1441,8 @@ void CNPC_CombineGunship::MoveHead( void )
 		}
  
 		// Look where going!
-#if 1 // old way- look according to rotational velocity
-		flYaw = UTIL_Approach( GetLocalAngularVelocity().y, flYaw, 2.0 * 10 * m_flDeltaT );	
-		flPitch = UTIL_Approach( GetLocalAngularVelocity().x, flPitch, 2.0 * 10 * m_flDeltaT );	
-#else // new way- look towards the next waypoint?
-		// !!!UNDONE
-#endif
+		flYaw = UTIL_Approach( GetLocalAngularVelocity().y, flYaw, 2.0 * 10 * m_flDeltaT );
+		flPitch = UTIL_Approach( GetLocalAngularVelocity().x, flPitch, 2.0 * 10 * m_flDeltaT );
 		break;
 	}
 
