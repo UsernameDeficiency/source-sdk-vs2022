@@ -1,18 +1,18 @@
 "GameInfo"
 {
-	game	"My First HL2MP Mod"
+	game	"Half-Life 2: TTMMOD"
 	title	"HALF+LIFE'"
-	title2	"deathmatch mod"
+	title2	"ttmm9d"
 	type multiplayer_only
 	nomodels 0
 	nohimodel 1
-	nocrosshair 1
+	nocrosshair 0
 	hidden_maps
 	{
 		"test_speakers"		1
 		"test_hardware"		1
 	}
-	supportsvr	1
+	supportsvr	0
 
 
 	FileSystem
