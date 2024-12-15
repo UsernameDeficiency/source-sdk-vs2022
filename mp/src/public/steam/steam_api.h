@@ -594,17 +594,18 @@ inline bool CSteamAPIContext::Init()
 		return false;
 	}
 
-	m_pSteamMusicRemote = SteamClient()->GetISteamMusicRemote( hSteamUser, hSteamPipe, STEAMMUSICREMOTE_INTERFACE_VERSION );
-	if ( !m_pSteamMusicRemote )
-	{
-		return false;
-	}
+	// Commenting out below lines to fix Steam crash: https://developer.valvesoftware.com/wiki/Setup_mod_on_steam#Problems_with_running_your_mod
+	// m_pSteamMusicRemote = SteamClient()->GetISteamMusicRemote( hSteamUser, hSteamPipe, STEAMMUSICREMOTE_INTERFACE_VERSION );
+	// if ( !m_pSteamMusicRemote )
+	// {
+	// 	return false;
+	// }
 
-	m_pSteamHTMLSurface = SteamClient()->GetISteamHTMLSurface( hSteamUser, hSteamPipe, STEAMHTMLSURFACE_INTERFACE_VERSION );
-	if ( !m_pSteamHTMLSurface )
-	{
-		return false;
-	}
+	// m_pSteamHTMLSurface = SteamClient()->GetISteamHTMLSurface( hSteamUser, hSteamPipe, STEAMHTMLSURFACE_INTERFACE_VERSION );
+	// if ( !m_pSteamHTMLSurface )
+	// {
+	// 	return false;
+	// }
 
 #ifdef _PS3
 	m_pSteamPS3OverlayRender = SteamClient()->GetISteamPS3OverlayRender();
