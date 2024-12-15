@@ -118,7 +118,6 @@ bool CheckSSETechnology(void)
 
 // BUGBUG, FIXME - Visual C Version 6.0 does not support SSE inline code YET (No macros from Intel either)
 // Fix this if VC7 supports inline SSE instructinons like "xorps" as shown below.
-#if 1
 			__try
 			{
 				_asm
@@ -130,7 +129,6 @@ bool CheckSSETechnology(void)
 				}
 			} 
 			__except(EXCEPTION_EXECUTE_HANDLER) 
-#endif
 
 			{ 
 				retval = false; 

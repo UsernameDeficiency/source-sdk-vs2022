@@ -2566,7 +2566,6 @@ void CFlexCycler::Think( void )
 			SetFlexWeight( i, weight );
 		}
 
-#if 1
 		if (flex_talk.GetInt() == -1)
 		{
 			m_istalking = 1;
@@ -2596,52 +2595,6 @@ void CFlexCycler::Think( void )
 			}
 			flex_talk.SetValue( "0" );
 		}
-#else
-		if (flex_talk.GetInt())
-		{
-			if (m_speaktime < gpGlobals->curtime)
-			{
-				if (m_phoneme == 0)
-				{
-					for (m_phoneme = 0; m_phoneme < GetNumFlexControllers(); m_phoneme++)
-					{
-						if (stricmp( GetFlexFacs( m_phoneme ), "27") == 0)
-							break;
-					}
-				}
-				m_istalking = !m_istalking;
-				if (m_istalking)
-				{
-					m_looktime = gpGlobals->curtime - 1.0;
-					m_speaktime = gpGlobals->curtime + random->RandomFloat( 0.5, 2.0 );
-				}
-				else
-				{
-					m_speaktime = gpGlobals->curtime + random->RandomFloat( 1.0, 3.0 );
-				}
-			}
-
-			for (i = m_phoneme; i < GetNumFlexControllers(); i++)
-			{
-				SetFlexWeight( i, 0.0f );
-			}
-
-			if (m_istalking)
-			{
-				m_flextime = gpGlobals->curtime + random->RandomFloat( 0.0, 0.2 );
-				m_flexWeight[random->RandomInt(m_phoneme, GetNumFlexControllers()-1)] = random->RandomFloat( 0.5, 1.0 );
-				float mouth = random->RandomFloat( 0.0, 1.0 );
-				float jaw = random->RandomFloat( 0.0, 1.0 );
-
-				m_flexWeight[m_phoneme - 2] = jaw * (mouth);
-				m_flexWeight[m_phoneme - 1] = jaw * (1.0 - mouth);
-			}
-		}
-		else
-		{
-			m_istalking = 0;
-		}
-#endif
 
 		// blink
 		if (m_blinktime < gpGlobals->curtime)

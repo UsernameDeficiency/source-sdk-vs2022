@@ -9615,7 +9615,6 @@ Vector CAI_BaseNPC::GetActualShootTrajectory( const Vector &shootOrigin )
 	// the player so that they see the cool bubble trails in the water ahead of them.
 	if (GetEnemy()->IsPlayer() && (GetWaterLevel() != 3) && (GetEnemy()->GetWaterLevel() == 3))
 	{
-#if 1
 		if (random->RandomInt(0, 4) < 3)
 		{
 			Vector vecEnemyForward;
@@ -9641,25 +9640,6 @@ Vector CAI_BaseNPC::GetActualShootTrajectory( const Vector &shootOrigin )
 			VectorNormalize( vecShotDir );
 			return vecShotDir;
 		}
-#else
-		if (random->RandomInt(0, 4) < 3)
-		{
-			// Aim at a point a few feet in front of the player's eyes
-			Vector vecEnemyForward;
-			GetEnemy()->GetVectors( &vecEnemyForward, NULL, NULL );
-
-			Vector vecAimPos = GetEnemy()->EyePosition() + (120.0f * vecEnemyForward );
-
-			Vector vecShotDir = vecAimPos - shootOrigin;
-			VectorNormalize( vecShotDir );
-
-			CShotManipulator manipulator( vecShotDir );
-			manipulator.ApplySpread( VECTOR_CONE_10DEGREES, 1 );
-			vecShotDir = manipulator.GetResult();
-
-			return vecShotDir;
-		}
-#endif
 	}
 
 	Vector vecProjectedPosition = GetActualShootPosition( shootOrigin );

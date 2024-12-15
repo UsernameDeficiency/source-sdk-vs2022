@@ -857,18 +857,7 @@ int CBasePlayer::TakeHealth( float flHealth, int bitsDamageType )
 		m_bitsDamageType &= ~( bitsDamageType & ~bitsDmgTimeBased );
 	}
 
-	// I disabled reporting history into the dbghist because it was super spammy.
-	// But, if you need to reenable it, the code is below in the "else" clause.
-#if 1 // #ifdef DISABLE_DEBUG_HISTORY
-	return BaseClass::TakeHealth (flHealth, bitsDamageType);
-#else
-	const int healingTaken = BaseClass::TakeHealth(flHealth,bitsDamageType);
-	char buf[256];
-	Q_snprintf(buf, 256, "[%f] Player %s healed for %d with damagetype %X\n", gpGlobals->curtime, GetDebugName(), healingTaken, bitsDamageType);
-	ADD_DEBUG_HISTORY( HISTORY_PLAYER_DAMAGE, buf );
-
-	return healingTaken;
-#endif
+	return BaseClass::TakeHealth(flHealth, bitsDamageType);
 }
 
 //-----------------------------------------------------------------------------

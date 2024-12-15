@@ -2065,7 +2065,6 @@ void CBaseEntity::UpdateOnRemove( void )
 //-----------------------------------------------------------------------------
 int CBaseEntity::ObjectCaps( void ) 
 {
-#if 1
 	model_t *pModel = GetModel();
 	bool bIsBrush = ( pModel && modelinfo->GetModelType( pModel ) == mod_brush );
 
@@ -2092,22 +2091,6 @@ int CBaseEntity::ObjectCaps( void )
 	}
 
 	return 0;
-#else
-	// We inherit our parent's use capabilities so that we can forward use commands
-	// to our parent.
-	int parentCaps = 0;
-	if (GetParent())
-	{
-		parentCaps = GetParent()->ObjectCaps();
-		parentCaps &= ( FCAP_IMPULSE_USE | FCAP_CONTINUOUS_USE | FCAP_ONOFF_USE | FCAP_DIRECTIONAL_USE );
-	}	
-
-	model_t *pModel = GetModel();
-	if ( pModel && modelinfo->GetModelType( pModel ) == mod_brush )
-		return parentCaps;
-
-	return FCAP_ACROSS_TRANSITION | parentCaps;
-#endif
 }
 
 void CBaseEntity::StartTouch( CBaseEntity *pOther )
