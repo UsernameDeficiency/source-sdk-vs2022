@@ -831,10 +831,16 @@ void CBaseHelicopter::UpdatePlayerDopplerShift( )
 			VectorSubtract( pPlayer->GetAbsOrigin(), GetAbsOrigin(), dir );
 			VectorNormalize(dir);
 
+#if 1
 			float velReceiver = DotProduct( pPlayer->GetAbsVelocity(), dir );
 			float velTransmitter = -DotProduct( GetAbsVelocity(), dir );
 			// speed of sound == 13049in/s
 			int iPitch = 100 * ((1 - velReceiver / 13049) / (1 + velTransmitter / 13049));
+#else
+			// This is a bogus doppler shift, but I like it better
+			float relV = DotProduct( GetAbsVelocity() - pPlayer->GetAbsVelocity(), dir );
+			int iPitch = (int)(100 + relV / 50.0);
+#endif
 
 			// clamp pitch shifts
 			if (iPitch > 250)

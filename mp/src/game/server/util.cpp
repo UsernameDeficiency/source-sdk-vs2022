@@ -3307,11 +3307,16 @@ void CC_CollisionTest( const CCommand &args )
 	test[testType] = duration;
 	Msg("%d collisions in %.2f ms (%u dots)\n", NUM_COLLISION_TESTS, duration*1000, dots );
 	partition->ReportStats( "" );
-
+#if 1
 	int red = 255, green = 0, blue = 0;
 	for ( i = 0; i < 1 /*NUM_COLLISION_TESTS*/; i++ )
 	{
 		NDebugOverlay::Line( start, targets[i], red, green, blue, false, 2 );
 	}
+#endif
 }
 static ConCommand collision_test("collision_test", CC_CollisionTest, "Tests collision system", FCVAR_CHEAT );
+
+
+
+

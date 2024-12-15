@@ -597,6 +597,7 @@ void CNPC_EnemyFinderCombineCannon::UpdateOnRemove()
 //-----------------------------------------------------------------------------
 bool CNPC_EnemyFinderCombineCannon::FVisible( CBaseEntity *pEntity, int traceMask, CBaseEntity **ppBlocker )
 {
+#if 1
 	CBaseEntity *pBlocker = NULL;
 	bool result;
 
@@ -632,6 +633,7 @@ bool CNPC_EnemyFinderCombineCannon::FVisible( CBaseEntity *pEntity, int traceMas
 	}
 
 	return result;
+#endif
 }
 
 //-----------------------------------------------------------------------------

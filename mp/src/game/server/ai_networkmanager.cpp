@@ -649,6 +649,7 @@ void CAI_NetworkManager::LoadNetworkGraph( void )
 	}
 
 	
+#if 1
 	CUtlRBTree<int> usedIds;
 	CUtlRBTree<int> reportedIds;
 	SetDefLessFunc( usedIds );
@@ -682,6 +683,7 @@ void CAI_NetworkManager::LoadNetworkGraph( void )
 
 	if ( printedHeader )
 		DevMsg( "\n** Should run \"Check For Problems\" on the VMF then verify dynamic links\n" );
+#endif
 
 	gm_fNetworksLoaded = true;
 	CAI_DynamicLink::gm_bInitialized = false;

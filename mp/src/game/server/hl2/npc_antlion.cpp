@@ -2864,6 +2864,8 @@ int CNPC_Antlion::RangeAttack1Conditions( float flDot, float flDist )
 //-----------------------------------------------------------------------------
 int CNPC_Antlion::MeleeAttack1Conditions( float flDot, float flDist )
 {
+#if 1 //NOTENOTE: Use predicted position melee attacks
+
 	//Get our likely position in one half second
 	Vector vecPrPos;
 	UTIL_PredictedPosition( GetEnemy(), 0.5f, &vecPrPos );
@@ -2888,6 +2890,33 @@ int CNPC_Antlion::MeleeAttack1Conditions( float flDot, float flDist )
 	if ( tr.m_pEnt != GetEnemy() && tr.fraction < 1.0f && IRelationType( tr.m_pEnt ) != D_HT )
 		return 0;
 
+#else
+
+	if ( flDot < 0.5f )
+		return COND_NOT_FACING_ATTACK;
+
+	float flAdjustedDist = ANTLION_MELEE1_RANGE;
+
+	if ( GetEnemy() )
+	{
+		// Give us extra space if our enemy is in a vehicle
+		CBaseCombatCharacter *pCCEnemy = GetEnemy()->MyCombatCharacterPointer();
+		if ( pCCEnemy != NULL && pCCEnemy->IsInAVehicle() )
+		{
+			flAdjustedDist *= 2.0f;
+		}
+	}
+
+	if ( flDist > flAdjustedDist )
+		return COND_TOO_FAR_TO_ATTACK;
+
+	trace_t	tr;
+	AI_TraceHull( WorldSpaceCenter(), GetEnemy()->WorldSpaceCenter(), -Vector(8,8,8), Vector(8,8,8), MASK_SOLID_BRUSHONLY, this, COLLISION_GROUP_NONE, &tr );
+
+	if ( tr.fraction < 1.0f )
+		return 0;
+
+#endif
 
 	return COND_CAN_MELEE_ATTACK1;
 }
