@@ -301,27 +301,7 @@ void CNPC_GroundTurret::DeathSound( const CTakeDamageInfo &info )
 //---------------------------------------------------------
 void CNPC_GroundTurret::MakeTracer( const Vector &vecTracerSrc, const trace_t &tr, int iTracerType )
 {
-#if 1
-	//BaseClass::MakeTracer( vecTracerSrc, tr, iTracerType );
 	UTIL_Tracer( vecTracerSrc, tr.endpos, 0, TRACER_DONT_USE_ATTACHMENT, 5000, true, "AR2Tracer" );
-#else
-	CBeam *pBeam;
-	int	width = 2;
-
-	pBeam = CBeam::BeamCreate( GROUNDTURRET_BEAM_SPRITE, width );
-	if ( !pBeam )
-		return;
-	
-	pBeam->SetStartPos( vecTracerSrc );
-	pBeam->SetEndPos( tr.endpos );
-	pBeam->SetWidth( width );
-	pBeam->SetEndWidth( width / 4.0f );
-
-	pBeam->SetBrightness( 100 );
-	pBeam->SetColor( 0, 145+random->RandomInt( -16, 16 ), 255 );
-	pBeam->RelinkBeam();
-	pBeam->LiveForTime( random->RandomFloat( 0.2f, 0.5f ) );
-#endif
 }
 
 //---------------------------------------------------------

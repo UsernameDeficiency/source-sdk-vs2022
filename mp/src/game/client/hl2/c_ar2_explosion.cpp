@@ -283,9 +283,6 @@ void C_AR2Explosion::Start(CParticleMgr *pParticleMgr, IPrototypeArgAccess *pArg
 				{
 					int iIntersection = rand() % nIntersections;
 
-					Vector velocity;
-					//velocity.Init(-1.0f + ((float)rand()/VALVE_RAND_MAX) * 2.0f, -1.0f + ((float)rand()/VALVE_RAND_MAX) * 2.0f, -1.0f + ((float)rand()/VALVE_RAND_MAX) * 2.0f);
-					//velocity = velocity * FRand(m_MinSpeed, m_MaxSpeed);
 					Vector direction = (vIntersections[iIntersection] - vCenter );
 					float dist = VectorNormalize( direction );
 					if(dist > AR2_DUST_RADIUS)
@@ -297,16 +294,7 @@ void C_AR2Explosion::Start(CParticleMgr *pParticleMgr, IPrototypeArgAccess *pArg
 					Vector reflection = direction - 2 * DotProduct( direction, pIntersected[iIntersection]->m_Plane.m_Normal ) * pIntersected[iIntersection]->m_Plane.m_Normal;
 					VectorNormalize( reflection );
 
-					velocity = reflection * AR2_DUST_SPEED * falloffMul;
-					// velocity = velocity + (vIntersections[iIntersection] - vCenter) * falloffMul;
-
-					
-					/*
-					debugoverlay->AddLineOverlay( vIntersections[iIntersection], 
-												  vIntersections[iIntersection] + reflection * 64,
-												  128, 128, 255, false, 15.0 );
-					*/
-#if 1
+					Vector velocity = reflection * AR2_DUST_SPEED * falloffMul;
 					AR2ExplosionParticle *pParticle = 
 						(AR2ExplosionParticle*)m_ParticleEffect.AddParticle( sizeof(AR2ExplosionParticle), m_MaterialHandle );
 
@@ -324,7 +312,6 @@ void C_AR2Explosion::Start(CParticleMgr *pParticleMgr, IPrototypeArgAccess *pArg
 						nParticles++;
 						break;
 					}
-#endif
 				}
 			}
 		}
