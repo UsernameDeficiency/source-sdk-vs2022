@@ -1,0 +1,21 @@
+Ta bort:
+	IsXbox
+	X360
+	IsPC
+	Playstation?
+	NO_STEAM?
+	CLIENT_DLL för Xbox?
+	bPerformSoftwareAA (endast till 360)
+	bFirstFrame (endast falsk på 360)
+	#if 1
+	SIXENSE
+	PS3
+	_GAMECONSOLE, PLATFORM_X360, IsGameConsole
+	EPISODIC?
+Funktioner
+	X360GammaToLinear
+	X360LinearToGamma
+
+Byt t.ex. isPC till compile time?
+
+Kör Code Analysis och t.ex. cppcheck
