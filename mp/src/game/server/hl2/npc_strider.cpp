@@ -2431,7 +2431,13 @@ bool CNPC_Strider::UpdateEnemyMemory( CBaseEntity *pEnemy, const Vector &positio
 		EmitSound( "NPC_Strider.Alert" );
 		// Move Strider's focus to this location and make strider mad at it
 		// (but less mad than at any other potential entities in the scene).
+#if 1
 		GetFocus()->SetAbsOrigin( position + Vector( 0, 0, 32 ) );
+#else
+		trace_t tr;
+		AI_TraceLine( EyePosition(), position + Vector( 0, 0, 32 ), MASK_SHOT, this, COLLISION_GROUP_NONE, &tr );
+		GetFocus()->SetAbsOrigin( tr.endpos );
+#endif
 
 		SetCondition( COND_STRIDER_ENEMY_UPDATED );
 

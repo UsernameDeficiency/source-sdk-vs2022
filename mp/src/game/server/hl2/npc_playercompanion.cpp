@@ -771,10 +771,12 @@ int CNPC_PlayerCompanion::SelectScheduleDanger()
 				// Just duck and cover if far away from the explosion, or in cover.
 				return SCHED_COWER;
 			}
+#if 1
 			else if( pSound && (pSound->m_iType & SOUND_CONTEXT_FROM_SNIPER) )
 			{
 				return SCHED_COWER;
 			}
+#endif
 
 			return SCHED_TAKE_COVER_FROM_BEST_SOUND;
 		}
