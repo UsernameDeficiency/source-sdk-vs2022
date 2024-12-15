@@ -1,0 +1,24 @@
+acdEeFHhILmt
+A Lambda
+' Upphöjd tvåa
+v Valve-logga
++ Bindestreck
+‘´ Japanska (?) tecken
+
+Vapenikoner
+	0 Shotgun
+	1 Crossbow
+	2 AR
+	3 RPG
+	4 HE
+	5 Bugbait
+	6 Crowbar
+	7 SMG grenade
+	8 AR grenade
+	9 Toalett (gravity gun)
+	, Gravity gun
+	– Pistol
+	. Revolver
+	/ SMG
+	* SLAM
+	$#& Ger tillsammans en trasig pistol
