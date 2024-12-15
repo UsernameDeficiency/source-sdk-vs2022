@@ -58,6 +58,18 @@ protected:
 private:
 	
 	CBaseHL2MPCombatWeapon( const CBaseHL2MPCombatWeapon & );
-};
 
+	
+};
+//Hobo: Might remove later, but would need to change ak47 and other guns that use them.
+enum stances
+{
+	E_STAND = 0,
+	E_DUCK = 1,
+	E_MOVE = 2,
+	E_RUN = 3,
+	E_INJURED = 4,
+	E_JUMP = 5,
+	E_DYING = 6,
+};
 #endif // WEAPON_BASEHL2MPCOMBATWEAPON_SHARED_H
