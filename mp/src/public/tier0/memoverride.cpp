@@ -11,7 +11,7 @@
 
 #undef PROTECTED_THINGS_ENABLE   // allow use of _vsnprintf
 
-#if defined( _WIN32 ) && !defined( _X360 )
+#if defined( _WIN32 )
 #define WIN_32_LEAN_AND_MEAN
 #include <windows.h>
 #endif
@@ -40,7 +40,7 @@
 #define __cdecl
 #endif
 
-#if defined( _WIN32 ) && !defined( _X360 )
+#if defined( _WIN32 )
 
 
 // Need to be able to define these if we link to a debug static lib!
@@ -420,8 +420,6 @@ void *realloc_db( void *pMem, size_t nSize, const char *pFileName, int nLine )
 //-----------------------------------------------------------------------------
 extern "C"
 {
-
-#if !defined( _X360 )
 	int __cdecl _heap_init()
 	{
 		return g_pMemAlloc != NULL;
@@ -430,7 +428,6 @@ extern "C"
 	void __cdecl _heap_term()
 	{
 	}
-#endif
 
 }
 #endif

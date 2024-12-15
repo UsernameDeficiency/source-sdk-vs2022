@@ -635,35 +635,6 @@ void CGrenadeHomer::AimThink( void )
 	VectorAngles( GetAbsVelocity(), angles );
 	SetLocalAngles( angles );
 
-#if 0 // BUBBLE
-	if( gpGlobals->curtime > m_flNextWarnTime )
-	{
-		// Make a bubble of warning sound in front of me.
-		const float WARN_INTERVAL = 0.25f;
-		float flSpeed = GetAbsVelocity().Length();
-		Vector vecWarnLocation;
-
-		// warn a little bit ahead of us, please.
-		vecWarnLocation = GetAbsOrigin() + GetAbsVelocity() * 0.75;
-
-		// Make a bubble of warning ahead of the missile.
-		CSoundEnt::InsertSound ( SOUND_DANGER, vecWarnLocation, flSpeed * WARN_INTERVAL, 0.5 );
-
-#if 0
-		Vector vecRight, vecForward;
-
-		AngleVectors( GetAbsAngles(), &vecForward, &vecRight, NULL );
-
-		NDebugOverlay::Line( vecWarnLocation, vecWarnLocation + vecForward * flSpeed * WARN_INTERVAL * 0.5, 255,255,0, true, 10);
-		NDebugOverlay::Line( vecWarnLocation, vecWarnLocation - vecForward * flSpeed * WARN_INTERVAL * 0.5, 255,255,0, true, 10);
-
-		NDebugOverlay::Line( vecWarnLocation, vecWarnLocation + vecRight * flSpeed * WARN_INTERVAL * 0.5, 255,255,0, true, 10);
-		NDebugOverlay::Line( vecWarnLocation, vecWarnLocation - vecRight * flSpeed * WARN_INTERVAL * 0.5, 255,255,0, true, 10);
-#endif
-		m_flNextWarnTime = gpGlobals->curtime + WARN_INTERVAL;
-	}
-#endif // BUBBLE
-
 	SetNextThink( gpGlobals->curtime + 0.1f );
 }
 

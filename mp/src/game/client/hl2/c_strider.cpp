@@ -133,9 +133,6 @@ public:
 			{
 				CIKTarget &target = m_pIk->m_target[i];
 				target.SetPos( m_vecIKTarget[i] );
-#if 0
-				debugoverlay->AddBoxOverlay( m_vecIKTarget[i], Vector( -2, -2, -2 ), Vector( 2, 2, 2), QAngle( 0, 0, 0 ), (int)255*m_pIk->m_target[i].est.latched, 0, 0, 0, 0 );
-#endif
 			}
 		}
 	}
@@ -703,39 +700,7 @@ void C_Strider::ClientThink()
 	// which is illegal to do while in the Relink phase.
 
 	ComputeEntitySpaceHitboxSurroundingBox( &m_vecRenderMins, &m_vecRenderMaxs );
-	// UNDONE: Disabled this until we can get closer to a final map and tune
-#if 0
-	// Cut ropes.
-	if ( gpGlobals->curtime >= m_flNextRopeCutTime )
-	{
-		// Blow the bbox out a little.
-		Vector vExtendedMins = vecMins - Vector( 50, 50, 50 );
-		Vector vExtendedMaxs = vecMaxs + Vector( 50, 50, 50 );
-
-		C_RopeKeyframe *ropes[512];
-		int nRopes = C_RopeKeyframe::GetRopesIntersectingAABB( ropes, ARRAYSIZE( ropes ), GetAbsOrigin() + vExtendedMins, GetAbsOrigin() + vExtendedMaxs );
-		for ( int i=0; i < nRopes; i++ )
-		{
-			C_RopeKeyframe *pRope = ropes[i];
-
-			if ( pRope->GetEndEntity() )
-			{
-				Vector vPos;
-				if ( pRope->GetEndPointPos( 1, vPos ) )
-				{
-					// Detach the endpoint.
-					pRope->SetEndEntity( NULL );
-					
-					// Make some spark effect here..
-					g_pEffects->Sparks( vPos );
-				}				
-			}
-		}
-
-		m_flNextRopeCutTime = gpGlobals->curtime + 0.5;
-	}
-#endif
-
+	
 	// True argument because the origin may have stayed the same, but the size is expected to always change
 	g_pClientShadowMgr->AddToDirtyShadowList( this, true );
 }

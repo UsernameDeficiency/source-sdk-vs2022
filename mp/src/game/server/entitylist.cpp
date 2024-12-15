@@ -414,22 +414,11 @@ CBaseEntity *CGlobalEntityList::NextEnt( CBaseEntity *pCurrentEnt )
 
 	while ( pList )
 	{
-#if 0
-		if ( pList->m_pEntity )
-		{
-			IServerUnknown *pUnk = static_cast<IServerUnknown*>(const_cast<IHandleEntity*>(pList->m_pEntity));
-			CBaseEntity *pRet = pUnk->GetBaseEntity();
-			if ( pRet )
-				return pRet;
-		}
-#else
 		return (CBaseEntity *)pList->m_pEntity;
-#endif
 		pList = pList->m_pNext;
 	}
 	
-	return NULL; 
-
+	return NULL;
 }
 
 
@@ -1633,4 +1622,3 @@ CON_COMMAND(report_simthinklist, "Lists all simulating/thinking entities")
 	}
 	list.ReportEntityList();
 }
-

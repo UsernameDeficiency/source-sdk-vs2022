@@ -1024,41 +1024,6 @@ public:
 		// Add to list
 		m_FileList.AddToTail( pfile );
 
-		// Swap the entire file
-		if ( IsX360() )
-		{
-			CByteswap swap;
-			swap.ActivateByteSwapping( true );
-			byte *pData = (byte*)buffer;
-			flexsettinghdr_t *pHdr = (flexsettinghdr_t*)pData;
-			swap.SwapFieldsToTargetEndian( pHdr );
-
-			// Flex Settings
-			flexsetting_t *pFlexSetting = (flexsetting_t*)((byte*)pHdr + pHdr->flexsettingindex);
-			for ( int i = 0; i < pHdr->numflexsettings; ++i, ++pFlexSetting )
-			{
-				swap.SwapFieldsToTargetEndian( pFlexSetting );
-				
-				flexweight_t *pWeight = (flexweight_t*)(((byte*)pFlexSetting) + pFlexSetting->settingindex );
-				for ( int j = 0; j < pFlexSetting->numsettings; ++j, ++pWeight )
-				{
-					swap.SwapFieldsToTargetEndian( pWeight );
-				}
-			}
-
-			// indexes
-			pData = (byte*)pHdr + pHdr->indexindex;
-			swap.SwapBufferToTargetEndian( (int*)pData, (int*)pData, pHdr->numindexes );
-
-			// keymappings
-			pData  = (byte*)pHdr + pHdr->keymappingindex;
-			swap.SwapBufferToTargetEndian( (int*)pData, (int*)pData, pHdr->numkeys );
-
-			// keyname indices
-			pData = (byte*)pHdr + pHdr->keynameindex;
-			swap.SwapBufferToTargetEndian( (int*)pData, (int*)pData, pHdr->numkeys );
-		}
-
 		// Fill in translation table
 		EnsureTranslations( instance, ( const flexsettinghdr_t * )pfile->buffer );
 
@@ -2586,26 +2551,6 @@ void CFlexCycler::Think( void )
 					SetFlexTarget( m_flexnum );
 				}
 			}
-
-#if 0
-			char szWhat[256];
-			szWhat[0] = '\0';
-			for (int i = 0; i < GetNumFlexControllers(); i++)
-			{
-				if (m_flextarget[i] == 1.0)
-				{
-					if (stricmp( GetFlexFacs( i ), "upper") != 0 && stricmp( GetFlexFacs( i ), "lower") != 0)
-					{
-						if (szWhat[0] == '\0')
-							Q_strncat( szWhat, "-", sizeof( szWhat ), COPY_ALL_CHARACTERS );
-						else
-							Q_strncat( szWhat, "+", sizeof( szWhat ), COPY_ALL_CHARACTERS );
-						Q_strncat( szWhat, GetFlexFacs( i ), sizeof( szWhat ), COPY_ALL_CHARACTERS );
-					}
-				}
-			}
-			Msg( "%s\n", szWhat );
-#endif
 		}
 
 		// slide it up.
@@ -2737,27 +2682,14 @@ void CFlexCycler::Think( void )
 			}
 		}
 
-#if 0
-		float dt = acos( DotProduct( (m_lookTarget - EyePosition()).Normalize(), (m_viewtarget - EyePosition()).Normalize() ) );
-
-		if (dt > M_PI / 4)
-		{
-			dt = (M_PI / 4) * dt;
-			m_viewtarget = ((1 - dt) * m_viewtarget + dt * m_lookTarget);
-		}
-#endif
-
 		SetViewtarget( m_lookTarget );
 	}
-
-	// Handle any facial animation from scene playback
-	// FIXME: do we still actually need flex cyclers?
-	// AddSceneSceneEvents();
 }
 
 
 void CFlexCycler::ProcessSceneEvents( void )
 {
+	// TODO: Does nothing
 	// Don't do anything since we handle facial stuff in Think()
 }
 

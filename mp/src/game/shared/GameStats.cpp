@@ -21,10 +21,6 @@
 #include <time.h>
 #ifdef GAME_DLL
 #include "vehicle_base.h"
-#endif 
-
-#if defined( _X360 )
-#include "xbox/xbox_win32stubs.h"
 #endif
 
 #ifdef CLIENT_DLL

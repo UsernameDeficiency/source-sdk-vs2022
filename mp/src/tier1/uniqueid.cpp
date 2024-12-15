@@ -26,7 +26,7 @@ void CreateUniqueId( UniqueId_t *pDest )
 	Assert( sizeof( UUID ) == sizeof( *pDest ) );
 	UuidCreate( (UUID *)pDest );
 #else
-	// X360/linux TBD: Need a real UUID Implementation
+	// Linux TBD: Need a real UUID Implementation
 	Q_memset( pDest, 0, sizeof( UniqueId_t ) );
 #endif
 }
@@ -65,7 +65,6 @@ bool UniqueIdFromString( UniqueId_t *pDest, const char *pBuf, int nMaxLen )
 		return false;
 	}
 #else
-	// X360TBD: Need a real UUID Implementation
 	// For now, use crc to generate a unique ID from the UUID string.
 	Q_memset( pDest, 0, sizeof( UniqueId_t ) );
 	if ( nMaxLen > 0 )
@@ -106,7 +105,6 @@ void UniqueIdToString( const UniqueId_t &id, char *pBuf, int nMaxLen )
 {
 	pBuf[ 0 ] = 0;
 
-// X360TBD: Need a real UUID Implementation
 #ifdef IS_WINDOWS_PC
 	UUID *self = ( UUID * )&id;
 
@@ -128,7 +126,6 @@ void CopyUniqueId( const UniqueId_t &src, UniqueId_t *pDest )
 
 bool Serialize( CUtlBuffer &buf, const UniqueId_t &src )
 {
-// X360TBD: Need a real UUID Implementation
 #ifdef IS_WINDOWS_PC
 	if ( buf.IsText() )
 	{

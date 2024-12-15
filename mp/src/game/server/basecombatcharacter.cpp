@@ -1503,20 +1503,6 @@ bool CBaseCombatCharacter::BecomeRagdoll( const CTakeDamageInfo &info, const Vec
 			info2.SetDamagePosition( pos );
 		}
 
-// UNDONE: Put in a real sound cue here, don't do this bogus hack anymore
-#if 0
-		Vector soundOrigin = info.GetDamagePosition();
-		CPASAttenuationFilter filter( soundOrigin );
-
-		EmitSound_t ep;
-		ep.m_nChannel = CHAN_STATIC;
-		ep.m_pSoundName = "NPC_MetroPolice.HitByVehicle";
-		ep.m_flVolume = 1.0f;
-		ep.m_SoundLevel = SNDLVL_NORM;
-		ep.m_pOrigin = &soundOrigin;
-
-		EmitSound( filter, SOUND_FROM_WORLD, ep );
-#endif
 		// in single player create ragdolls on the server when the player hits someone
 		// with their vehicle - for more dramatic death/collisions
 		CBaseEntity *pRagdoll = CreateServerRagdoll( this, m_nForceBone, info2, COLLISION_GROUP_INTERACTIVE_DEBRIS, true );

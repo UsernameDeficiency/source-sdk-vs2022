@@ -282,8 +282,6 @@ float GammaToLinear( float gamma )
 	if ( gamma >= 0.95f )
 	{
 		// Use GammaToLinearFullRange maybe if you trip this.
-// X360TEMP
-//		Assert( gamma <= 1.0f );
 		return 1.0f;
 	}
 
@@ -558,9 +556,6 @@ inline static int VectorToColorRGBExp32_CalcExponent( const float *pin )
 
 /// Slightly faster version of the function to turn a float-vector color into 
 /// a compressed-exponent notation 32bit color. However, still not SIMD optimized.
-/// PS3 developer: note there is a movement of a float onto an int here, which is
-/// bad on the base registers -- consider doing this as Altivec code, or better yet
-/// moving it onto the cell.
 /// \warning: Assumes an IEEE 754 single-precision float representation! Those of you
 /// porting to an 8080 are out of luck.
 void VectorToColorRGBExp32( const Vector& vin, ColorRGBExp32 &c )

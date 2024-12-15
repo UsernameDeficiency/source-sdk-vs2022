@@ -924,10 +924,6 @@ int CHLClient::Init( CreateInterfaceFn appSystemFactory, CreateInterfaceFn physi
 		return false;
 	if ( (scenefilecache = (ISceneFileCache *)appSystemFactory( SCENE_FILE_CACHE_INTERFACE_VERSION, NULL )) == NULL )
 		return false;
-	if ( IsX360() && (xboxsystem = (IXboxSystem *)appSystemFactory( XBOXSYSTEM_INTERFACE_VERSION, NULL )) == NULL )
-		return false;
-	if ( IsX360() && (matchmaking = (IMatchmaking *)appSystemFactory( VENGINE_MATCHMAKING_VERSION, NULL )) == NULL )
-		return false;
 #ifndef _XBOX
 	if ( ( gamestatsuploader = (IUploadGameStats *)appSystemFactory( INTERFACEVERSION_UPLOADGAMESTATS, NULL )) == NULL )
 		return false;
@@ -1081,13 +1077,11 @@ int CHLClient::Init( CreateInterfaceFn appSystemFactory, CreateInterfaceFn physi
 
 	C_BaseAnimating::InitBoneSetupThreadPool();
 
-#if defined( WIN32 ) && !defined( _X360 )
+#if defined( WIN32 )
 	// NVNT connect haptics sytem
 	ConnectHaptics(appSystemFactory);
 #endif
-#ifndef _X360
-	HookHapticMessages(); // Always hook the messages
-#endif
+HookHapticMessages(); // Always hook the messages
 
 	return true;
 }
@@ -1222,7 +1216,7 @@ void CHLClient::Shutdown( void )
 
 	gameeventmanager = NULL;
 
-#if defined( WIN32 ) && !defined( _X360 )
+#if defined( WIN32 )
 	// NVNT Disconnect haptics system
 	DisconnectHaptics();
 #endif

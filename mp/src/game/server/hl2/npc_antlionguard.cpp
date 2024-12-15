@@ -1176,16 +1176,6 @@ int CNPC_AntlionGuard::SelectSchedule( void )
 	if ( m_bIsBurrowed )
 		return SCHED_IDLE_STAND;
 
-#if 0
-	// Debug physics object finding
-	if ( 0 ) //g_debug_antlionguard.GetInt() == 3 )
-	{
-		m_flPhysicsCheckTime = 0;
-		UpdatePhysicsTarget( false );
-		return SCHED_IDLE_STAND;
-	}
-#endif
-
 	// Flinch on heavy damage, but not if we've flinched too recently.
 	// This is done to prevent stun-locks from grenades.
 	if ( !m_bInCavern && HasCondition( COND_HEAVY_DAMAGE ) && m_flNextHeavyFlinchTime < gpGlobals->curtime )

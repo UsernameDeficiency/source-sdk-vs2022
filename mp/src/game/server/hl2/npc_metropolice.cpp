@@ -2239,18 +2239,12 @@ Vector CNPC_MetroPolice::ComputeBurstTrajectory( const Vector &shootOrigin )
 
 	VectorNormalize( vecPos );
 
-	// X360BUG: Was causing compiler crash in release, still?
-//	if ( IsPC() )
-	{
-		// Allow for steering towards the target.
-		SteerBurstTowardTarget();
-	}
+	// Allow for steering towards the target.
+	SteerBurstTowardTarget();
 	
 	// Update the burst target position
 	m_vecBurstTargetPos += m_vecBurstDelta;
 	
-//	NDebugOverlay::Cross3D( m_vecBurstTargetPos, -Vector(32,32,32), Vector(32,32,32), 255, 0, 255, false, 1.0f );
-
 	return vecPos;
 }
 
@@ -3004,14 +2998,6 @@ bool CNPC_MetroPolice::HandleInteraction(int interactionType, void *data, CBaseC
 		else
 		{
 			AdministerJustice();
-		}
-
-		// See if the object is the cupcop can. If so, fire the output (for x360 achievement)
-		CBaseProp *pProp = (CBaseProp*)data;
-		if( pProp != NULL )
-		{
-			if( pProp->NameMatches("cupcop_can") )
-				m_OnCupCopped.FireOutput( this, NULL );
 		}
 
 		return true;

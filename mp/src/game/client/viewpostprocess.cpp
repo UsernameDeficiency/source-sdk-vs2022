@@ -901,19 +901,6 @@ void CLuminanceHistogramSystem::UpdateLuminanceRanges( void )
 void CLuminanceHistogramSystem::DisplayHistogram( void )
 {
 	bool bDrawTextThisFrame = true;
-	if ( IsX360() )
-	{
-		static float s_flLastTimeUpdate = 0.0f;
-		if ( int( gpGlobals->curtime ) - int( s_flLastTimeUpdate ) >= 2 )
-		{
-			s_flLastTimeUpdate = gpGlobals->curtime;
-			bDrawTextThisFrame = true;
-		}
-		else
-		{
-			bDrawTextThisFrame = false;
-		}
-	}
 
 	CMatRenderContextPtr pRenderContext( materials );
 	pRenderContext->PushRenderTargetAndViewport();
@@ -1006,10 +993,6 @@ void CLuminanceHistogramSystem::DisplayHistogram( void )
 	}
 
 	int xpStart = dest_width - nTotalGraphPixelsWide - 10;
-	if ( IsX360() )
-	{
-		xpStart -= 50;
-	}
 
 	int xp = xpStart;
 	for ( int l=0; l<nNumRanges; l++ )
@@ -1079,10 +1062,6 @@ void CLuminanceHistogramSystem::DisplayHistogram( void )
 
 		float flBarWidth = 600.0f;
 		float flBarStart = dest_width - flBarWidth - 10.0f;
-		if ( IsX360() )
-		{
-			flBarStart -= 50;
-		}
 
 		pRenderContext->Viewport( flBarStart, 4 + HISTOGRAM_BAR_SIZE - 4 + 75, flBarWidth, 4 );
 		pRenderContext->ClearColor3ub( 200, 200, 200 );
@@ -1099,10 +1078,7 @@ void CLuminanceHistogramSystem::DisplayHistogram( void )
 
 		if ( bDrawTextThisFrame == true )
 		{
-			if ( IsX360() )
-				engine->Con_NPrintf( 26, "Min: %.2f  Max: %.2f", flAutoExposureMin, flAutoExposureMax );
-			else
-				engine->Con_NPrintf( 26, "%.2f                                                                                       %.2f                                                                                           %.2f", flAutoExposureMin, ( flAutoExposureMax + flAutoExposureMin ) / 2.0f, flAutoExposureMax );
+			engine->Con_NPrintf( 26, "%.2f                                                                                       %.2f                                                                                           %.2f", flAutoExposureMin, ( flAutoExposureMax + flAutoExposureMin ) / 2.0f, flAutoExposureMax );
 		}
 	}
 
@@ -1557,11 +1533,7 @@ static void Generate8BitBloomTexture( IMatRenderContext *pRenderContext, float f
 												0, 0, nSrcWidth-2, nSrcHeight-2,
 												nSrcWidth, nSrcHeight );
 
-	if ( IsX360() )
-	{
-		pRenderContext->CopyRenderTargetToTextureEx( dest_rt0, 0, NULL, NULL );
-	}
-	else if ( g_bDumpRenderTargets )
+	if ( g_bDumpRenderTargets )
 	{
 		DumpTGAofRenderTarget( nSrcWidth/4, nSrcHeight/4, "QuarterSizeFB" );
 	}
@@ -1571,11 +1543,7 @@ static void Generate8BitBloomTexture( IMatRenderContext *pRenderContext, float f
 	pRenderContext->DrawScreenSpaceRectangle(	xblur_mat, 0, 0, nSrcWidth/4, nSrcHeight/4,
 												0, 0, nSrcWidth/4-1, nSrcHeight/4-1,
 												nSrcWidth/4, nSrcHeight/4 );
-	if ( IsX360() )
-	{
-		pRenderContext->CopyRenderTargetToTextureEx( dest_rt1, 0, NULL, NULL );
-	}
-	else if ( g_bDumpRenderTargets )
+	if ( g_bDumpRenderTargets )
 	{
 		DumpTGAofRenderTarget( nSrcWidth/4, nSrcHeight/4, "BlurX" );
 	}
@@ -1587,11 +1555,7 @@ static void Generate8BitBloomTexture( IMatRenderContext *pRenderContext, float f
 	pRenderContext->DrawScreenSpaceRectangle(	yblur_mat, 0, 0, nSrcWidth / 4, nSrcHeight / 4,
 												0, 0, nSrcWidth / 4 - 1, nSrcHeight / 4 - 1,
 												nSrcWidth / 4, nSrcHeight / 4 );
-	if ( IsX360() )
-	{
-		pRenderContext->CopyRenderTargetToTextureEx( dest_rt0, 0, NULL, NULL );
-	}
-	else if ( g_bDumpRenderTargets )
+	if ( g_bDumpRenderTargets )
 	{
 		DumpTGAofRenderTarget( nSrcWidth/4, nSrcHeight/4, "BlurYAndBloom" );
 	}
@@ -1626,36 +1590,17 @@ static void DoPreBloomTonemapping( IMatRenderContext *pRenderContext, int nX, in
 			
 			if ( mat_debug_autoexposure.GetInt() || mat_show_histogram.GetInt() )
 			{
-				bool bDrawTextThisFrame = true;
-
-				if ( IsX360() )
+				if ( mat_tonemap_algorithm.GetInt() == 0 )
 				{
-					static float s_flLastTimeUpdate = 0.0f;
-					if ( int( gpGlobals->curtime ) - int( s_flLastTimeUpdate ) >= 2 )
-					{
-						s_flLastTimeUpdate = gpGlobals->curtime;
-						bDrawTextThisFrame = true;
-					}
-					else
-					{
-						bDrawTextThisFrame = false;
-					}
+					engine->Con_NPrintf( 19, "(Original algorithm) Target Scalar = %4.2f  Min/Max( %4.2f, %4.2f )  Final Scalar: %4.2f  Actual: %4.2f",
+											flTargetScalar, flAutoExposureMin, flAutoExposureMax, mat_hdr_tonemapscale.GetFloat(), pRenderContext->GetToneMappingScaleLinear().x );
 				}
-
-				if ( bDrawTextThisFrame == true )
+				else
 				{
-					if ( mat_tonemap_algorithm.GetInt() == 0 )
-					{
-						engine->Con_NPrintf( 19, "(Original algorithm) Target Scalar = %4.2f  Min/Max( %4.2f, %4.2f )  Final Scalar: %4.2f  Actual: %4.2f",
-											 flTargetScalar, flAutoExposureMin, flAutoExposureMax, mat_hdr_tonemapscale.GetFloat(), pRenderContext->GetToneMappingScaleLinear().x );
-					}
-					else
-					{
-						engine->Con_NPrintf( 19, "%.2f%% of pixels above %d%% target @ %4.2f%%  Target Scalar = %4.2f  Min/Max( %4.2f, %4.2f )  Final Scalar: %4.2f  Actual: %4.2f",
-											 mat_tonemap_percent_bright_pixels.GetFloat(), mat_tonemap_percent_target.GetInt(),
-											 ( g_HDR_HistogramSystem.FindLocationOfPercentBrightPixels( mat_tonemap_percent_bright_pixels.GetFloat(), mat_tonemap_percent_target.GetFloat() ) * 100.0f ),
-											 g_HDR_HistogramSystem.GetTargetTonemapScalar( true ), flAutoExposureMin, flAutoExposureMax, mat_hdr_tonemapscale.GetFloat(), pRenderContext->GetToneMappingScaleLinear().x );
-					}
+					engine->Con_NPrintf( 19, "%.2f%% of pixels above %d%% target @ %4.2f%%  Target Scalar = %4.2f  Min/Max( %4.2f, %4.2f )  Final Scalar: %4.2f  Actual: %4.2f",
+											mat_tonemap_percent_bright_pixels.GetFloat(), mat_tonemap_percent_target.GetInt(),
+											( g_HDR_HistogramSystem.FindLocationOfPercentBrightPixels( mat_tonemap_percent_bright_pixels.GetFloat(), mat_tonemap_percent_target.GetFloat() ) * 100.0f ),
+											g_HDR_HistogramSystem.GetTargetTonemapScalar( true ), flAutoExposureMin, flAutoExposureMax, mat_hdr_tonemapscale.GetFloat(), pRenderContext->GetToneMappingScaleLinear().x );
 				}
 			}
 		}
@@ -2160,42 +2105,6 @@ static void DrawPyroPost( IMaterial *pMaterial,
 	meshBuilder.TexCoord2f( 0, flLeftU   + (float) (xSegments - 1) * flUWidth, flTopV + (float)(ySegments - 1) * flVHeight);
 	meshBuilder.AdvanceVertex();
 
-
-
-#if 0
-
-	for ( int x=0; x < xSegments; x++ )
-	{
-		for ( int y=0; y < ySegments; y++ )
-		{
-			if ( ( x == 1 || x == 2 ) && ( y == 1 || y == 2 ) )
-			{	// skip the center 4 segments
-				continue;
-			}
-
-			// Top left
-			meshBuilder.Position3f( flLeftX   + (float) x * flWidth, flTopY - (float) y * flHeight, 0.0f );
-			meshBuilder.TexCoord2f( 0, flLeftU   + (float) x * flUWidth, flTopV + (float) y * flVHeight);
-			meshBuilder.AdvanceVertex();
-
-			// Top right (x+1)
-			meshBuilder.Position3f( flLeftX   + (float) (x+1) * flWidth, flTopY - (float) y * flHeight, 0.0f );
-			meshBuilder.TexCoord2f( 0, flLeftU   + (float) (x+1) * flUWidth, flTopV + (float) y * flVHeight);
-			meshBuilder.AdvanceVertex();
-
-			// Bottom right (x+1), (y+1)
-			meshBuilder.Position3f( flLeftX   + (float) (x+1) * flWidth, flTopY - (float) (y+1) * flHeight, 0.0f );
-			meshBuilder.TexCoord2f( 0, flLeftU   + (float) (x+1) * flUWidth, flTopV + (float)(y+1) * flVHeight);
-			meshBuilder.AdvanceVertex();
-
-			// Bottom left (y+1)
-			meshBuilder.Position3f( flLeftX   + (float) x * flWidth, flTopY - (float) (y+1) * flHeight, 0.0f );
-			meshBuilder.TexCoord2f( 0, flLeftU   + (float) x * flUWidth, flTopV + (float)(y+1) * flVHeight);
-			meshBuilder.AdvanceVertex();
-		}
-	}
-#endif
-
 	meshBuilder.End();
 	pMesh->Draw();
 
@@ -2233,10 +2142,6 @@ void DoEnginePostProcessing( int x, int y, int w, int h, bool bFlashlightIsOn, b
 
 		DumpTGAofRenderTarget( w, h, "BackBuffer" );
 	}
-
-#if defined( _X360 )
-	pRenderContext->PushVertexShaderGPRAllocation( 16 ); //max out pixel shader threads
-#endif
 
 	if ( r_queued_post_processing.GetInt() )
 	{
@@ -2280,52 +2185,22 @@ void DoEnginePostProcessing( int x, int y, int w, int h, bool bFlashlightIsOn, b
 			// Set software-AA on by default for 360
 			if ( mat_software_aa_strength.GetFloat() == -1.0f )
 			{
-				if ( IsX360() )
-				{
-					mat_software_aa_strength.SetValue( 1.0f );
-					if ( g_pMaterialSystem->GetCurrentConfigForVideoCard().m_VideoMode.m_Height > 480 )
-					{
-						mat_software_aa_quality.SetValue( 0 );
-					}
-					else
-					{
-						// For standard-def, we have fewer pixels so we can afford 'high quality' mode (5->9 taps/pixel)
-						mat_software_aa_quality.SetValue( 1 );
-					}
-				}
-				else
-				{
-					mat_software_aa_strength.SetValue( 0.0f );
-				}
+				mat_software_aa_strength.SetValue( 0.0f );
 			}
 
 			// Same trick for setting up the vgui aa strength
 			if ( mat_software_aa_strength_vgui.GetFloat() == -1.0f )
 			{
-				if ( IsX360() && (g_pMaterialSystem->GetCurrentConfigForVideoCard().m_VideoMode.m_Height == 720) )
-				{
-					mat_software_aa_strength_vgui.SetValue( 2.0f );
-				}
-				else
-				{
-					mat_software_aa_strength_vgui.SetValue( 1.0f );
-				}
+				mat_software_aa_strength_vgui.SetValue( 1.0f );
 			}
 
 			float flAAStrength;
 
 			// We do a second AA blur pass over the TF intro menus. use mat_software_aa_strength_vgui there instead
-			if ( IsX360() && bPostVGui )
-			{
-				flAAStrength = mat_software_aa_strength_vgui.GetFloat();
-			}
-			else
-			{
-				flAAStrength = mat_software_aa_strength.GetFloat();
-			}
+			flAAStrength = mat_software_aa_strength.GetFloat();
 
 			// bloom, software-AA and colour-correction (applied in 1 pass, after generation of the bloom texture)
-			bool  bPerformSoftwareAA	= IsX360() && ( engine->GetDXSupportLevel() >= 90 ) && ( flAAStrength != 0.0f );
+			bool  bPerformSoftwareAA	= false;
 			bool  bPerformBloom			= !bPostVGui && ( flBloomScale > 0.0f ) && ( engine->GetDXSupportLevel() >= 90 );
 			bool  bPerformColCorrect	= !bPostVGui && 
 										  ( g_pMaterialSystemHardwareConfig->GetDXSupportLevel() >= 90) &&
@@ -2395,7 +2270,7 @@ void DoEnginePostProcessing( int x, int y, int w, int h, bool bFlashlightIsOn, b
 				// when run outside the debugger for some mods (DoD). This forces it to skip
 				// a frame, ensuring we don't get the weird texture crash we otherwise would.
 				// FIXME: This will be removed when the true cause is found [added: Main CL 144694]
-				static bool bFirstFrame = !IsX360();
+				static bool bFirstFrame = true;
 				if( !bFirstFrame || !bPerformColCorrect )
 				{
 					bool bFBUpdated = false;
@@ -2628,10 +2503,6 @@ void DoEnginePostProcessing( int x, int y, int w, int h, bool bFlashlightIsOn, b
 			break;
 		}
 	}
-
-#if defined( _X360 )
-	pRenderContext->PopVertexShaderGPRAllocation();
-#endif
 }
 
 // Motion Blur Material Proxy =========================================================================================
@@ -2657,6 +2528,7 @@ CMotionBlurMaterialProxy::CMotionBlurMaterialProxy()
 CMotionBlurMaterialProxy::~CMotionBlurMaterialProxy()
 {
 	// Do nothing
+	// TODO: Remove all references
 }
 
 bool CMotionBlurMaterialProxy::Init( IMaterial *pMaterial, KeyValues *pKeyValues )
@@ -2696,7 +2568,6 @@ ConVar mat_motion_blur_forward_enabled( "mat_motion_blur_forward_enabled", "0" )
 ConVar mat_motion_blur_falling_min( "mat_motion_blur_falling_min", "10.0" );
 ConVar mat_motion_blur_falling_max( "mat_motion_blur_falling_max", "20.0" );
 ConVar mat_motion_blur_falling_intensity( "mat_motion_blur_falling_intensity", "1.0" );
-//ConVar mat_motion_blur_roll_intensity( "mat_motion_blur_roll_intensity", "1.0" );
 ConVar mat_motion_blur_rotation_intensity( "mat_motion_blur_rotation_intensity", "1.0" );
 ConVar mat_motion_blur_strength( "mat_motion_blur_strength", "1.0" );
 
@@ -2734,9 +2605,6 @@ void DoImageSpaceMotionBlur( const CViewSetup &view, int x, int y, int w, int h 
 		static float s_vPreviousPositon[3] = { 0.0f, 0.0f, 0.0f };
 		static matrix3x4_t s_mPreviousFrameBasisVectors;
 		static float s_flNoRotationalMotionBlurUntil = 0.0f;
-		//float vPreviousSideVec[3] = { s_mPreviousFrameBasisVectors[0][1], s_mPreviousFrameBasisVectors[1][1], s_mPreviousFrameBasisVectors[2][1] };
-		//float vPreviousForwardVec[3] = { s_mPreviousFrameBasisVectors[0][0], s_mPreviousFrameBasisVectors[1][0], s_mPreviousFrameBasisVectors[2][0] };
-		//float vPreviousUpVec[3] = { s_mPreviousFrameBasisVectors[0][2], s_mPreviousFrameBasisVectors[1][2], s_mPreviousFrameBasisVectors[2][2] };
 
 		float flTimeElapsed = gpGlobals->realtime - s_flLastTimeUpdate;
 
@@ -2758,9 +2626,6 @@ void DoImageSpaceMotionBlur( const CViewSetup &view, int x, int y, int w, int h 
 		while ( flCurrentYaw < -180.0f )
 			flCurrentYaw += 360.0f;
 
-		//engine->Con_NPrintf( 0, "Blur Pitch: %6.2f   Yaw: %6.2f", flCurrentPitch, flCurrentYaw );
-		//engine->Con_NPrintf( 1, "Blur FOV: %6.2f   Aspect: %6.2f   Ortho: %s", view.fov, view.m_flAspectRatio, view.m_bOrtho ? "Yes" : "No" );
-
 		//===========================//
 		// Get current basis vectors //
 		//===========================//
@@ -2769,7 +2634,6 @@ void DoImageSpaceMotionBlur( const CViewSetup &view, int x, int y, int w, int h 
 
 		float vCurrentSideVec[3] = { mCurrentBasisVectors[0][1], mCurrentBasisVectors[1][1], mCurrentBasisVectors[2][1] };
 		float vCurrentForwardVec[3] = { mCurrentBasisVectors[0][0], mCurrentBasisVectors[1][0], mCurrentBasisVectors[2][0] };
-		//float vCurrentUpVec[3] = { mCurrentBasisVectors[0][2], mCurrentBasisVectors[1][2], mCurrentBasisVectors[2][2] };
 
 		//======================//
 		// Get current position //
@@ -2787,7 +2651,6 @@ void DoImageSpaceMotionBlur( const CViewSetup &view, int x, int y, int w, int h 
 			// If we moved a far distance in one frame and more than //
 			// half a second elapsed, disable motion blur this frame //
 			//=======================================================//
-			//engine->Con_NPrintf( 8, " Pos change && time > 0.5 seconds %f ", gpGlobals->realtime );
 
 			g_vMotionBlurValues[0] = 0.0f;
 			g_vMotionBlurValues[1] = 0.0f;
@@ -2810,7 +2673,6 @@ void DoImageSpaceMotionBlur( const CViewSetup &view, int x, int y, int w, int h 
 			// We moved a far distance in a frame, use the same motion blur as last frame	  //
 			// because I think we just went through a portal (should we ifdef this behavior?) //
 			//================================================================================//
-			//engine->Con_NPrintf( 8, " Position changed %f units @ %.2f time ", VectorLength( vPositionChange ), gpGlobals->realtime );
 
 			s_flNoRotationalMotionBlurUntil = gpGlobals->realtime + 1.0f; // Wait a second until the portal craziness calms down
 		}
@@ -2822,7 +2684,6 @@ void DoImageSpaceMotionBlur( const CViewSetup &view, int x, int y, int w, int h 
 			// Compute horizontal and vertical fov
 			float flHorizontalFov = view.fov;
 			float flVerticalFov = ( view.m_flAspectRatio <= 0.0f ) ? ( view.fov ) : ( view.fov  / view.m_flAspectRatio );
-			//engine->Con_NPrintf( 2, "Horizontal Fov: %6.2f   Vertical Fov: %6.2f", flHorizontalFov, flVerticalFov );
 
 			//=====================//
 			// Forward motion blur //
@@ -2854,8 +2715,6 @@ void DoImageSpaceMotionBlur( const CViewSetup &view, int x, int y, int w, int h 
 			float flUndampenedYaw = flYawDiffAdjusted / flHorizontalFov;
 			g_vMotionBlurValues[0] = flUndampenedYaw * ( 1.0f - ( fabs( flCurrentPitch ) / 90.0f ) ); // Dampen horizontal yaw blur based on pitch
 
-			//engine->Con_NPrintf( 4, "flSideDotMotion: %6.2f   yaw diff: %6.2f  ( %6.2f, %6.2f )", flSideDotMotion, ( s_flPreviousYaw - flCurrentYaw ), flYawDiffOriginal, flYawDiffAdjusted );
-
 			//=======================================//
 			// Pitch (Compensate for forward motion) //
 			//=======================================//
@@ -2876,16 +2735,11 @@ void DoImageSpaceMotionBlur( const CViewSetup &view, int x, int y, int w, int h 
 
 			g_vMotionBlurValues[1] = flPitchDiffAdjusted / flVerticalFov;
 
-			//engine->Con_NPrintf( 5, "flViewDotMotion %6.2f, flPitchCompensateMask %6.2f, flPitchDiffOriginal %6.2f, flPitchDiffAdjusted %6.2f, g_vMotionBlurValues[1] %6.2f", flViewDotMotion, flPitchCompensateMask, flPitchDiffOriginal, flPitchDiffAdjusted, g_vMotionBlurValues[1]);
-
 			//========================================================//
 			// Roll (Enabled when we're looking down and yaw changes) //
 			//========================================================//
 			g_vMotionBlurValues[3] = flUndampenedYaw; // Roll starts out as undampened yaw intensity and is then scaled by pitch
 			g_vMotionBlurValues[3] *= ( fabs( flCurrentPitch ) / 90.0f ) * ( fabs( flCurrentPitch ) / 90.0f ) * ( fabs( flCurrentPitch ) / 90.0f ); // Dampen roll based on pitch^3
-
-			//engine->Con_NPrintf( 4, "[2] before scale and bias: %6.2f", g_vMotionBlurValues[2] );
-			//engine->Con_NPrintf( 5, "[3] before scale and bias: %6.2f", g_vMotionBlurValues[3] );
 
 			//==============================================================//
 			// Time-adjust falling effect until we can do something smarter //
@@ -2910,26 +2764,15 @@ void DoImageSpaceMotionBlur( const CViewSetup &view, int x, int y, int w, int h 
 			//===============================================================//
 			// Dampen motion blur from 100%-0% as fps drops from 50fps-30fps //
 			//===============================================================//
-			if ( !IsX360() ) // I'm not doing this on the 360 yet since I can't test it
-			{
-				float flSlowFps = 30.0f;
-				float flFastFps = 50.0f;
-				float flCurrentFps = ( flTimeElapsed > 0.0f ) ? ( 1.0f / flTimeElapsed ) : 0.0f;
-				float flDampenFactor = clamp( ( ( flCurrentFps - flSlowFps ) / ( flFastFps - flSlowFps ) ), 0.0f, 1.0f );
+			float flSlowFps = 30.0f;
+			float flFastFps = 50.0f;
+			float flCurrentFps = ( flTimeElapsed > 0.0f ) ? ( 1.0f / flTimeElapsed ) : 0.0f;
+			float flDampenFactor = clamp( ( ( flCurrentFps - flSlowFps ) / ( flFastFps - flSlowFps ) ), 0.0f, 1.0f );
 
-				//engine->Con_NPrintf( 4, "gpGlobals->realtime %.2f  gpGlobals->curtime %.2f", gpGlobals->realtime, gpGlobals->curtime );
-				//engine->Con_NPrintf( 5, "flCurrentFps %.2f", flCurrentFps );
-				//engine->Con_NPrintf( 7, "flTimeElapsed %.2f", flTimeElapsed );
-
-				g_vMotionBlurValues[0] *= flDampenFactor;
-				g_vMotionBlurValues[1] *= flDampenFactor;
-				g_vMotionBlurValues[2] *= flDampenFactor;
-				g_vMotionBlurValues[3] *= flDampenFactor;
-
-				//engine->Con_NPrintf( 6, "Dampen: %.2f", flDampenFactor );
-			}
-
-			//engine->Con_NPrintf( 6, "Final values: { %6.2f%%, %6.2f%%, %6.2f%%, %6.2f%% }", g_vMotionBlurValues[0]*100.0f, g_vMotionBlurValues[1]*100.0f, g_vMotionBlurValues[2]*100.0f, g_vMotionBlurValues[3]*100.0f );
+			g_vMotionBlurValues[0] *= flDampenFactor;
+			g_vMotionBlurValues[1] *= flDampenFactor;
+			g_vMotionBlurValues[2] *= flDampenFactor;
+			g_vMotionBlurValues[3] *= flDampenFactor;
 		}
 
 		//============================================//

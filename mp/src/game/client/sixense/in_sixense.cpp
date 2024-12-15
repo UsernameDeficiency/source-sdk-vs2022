@@ -46,7 +46,7 @@ using sixenseMath::Vector4;
 using sixenseMath::Quat;
 using sixenseMath::Line;
 
-#if defined( WIN32 ) && !defined( _X360 )
+#if defined( WIN32 )
 #define _WIN32_WINNT 0x0502
 #endif
 #include <winlite.h>
@@ -490,54 +490,6 @@ bool SixenseInput::UnloadModules()
 	return true;
 }
 
-#if 0
-static void update_controller_manager_visibility( sixenseAllControllerData *acd ) 
-{
-
-	if( !SixenseInput::m_SixenseFrame ) return;
-
-	bool controllers_docked = acd->controllers[0].is_docked || acd->controllers[1].is_docked;
-
-
-	bool power_up_screens_showing = false;
-	// It's ok for there to be no device plugged in, don't show the controller manager in that case
-	std::string current_step = m_pControllerManager->getTextureFileName();
-	if( current_step == "1P2C/p1c2_power_up_0.tif" || current_step == "1P2C/p1c2_power_up_1.tif" ) 
-	{
-		power_up_screens_showing = true;
-	}
-
-	//Msg("current step %s\n", current_step.c_str() );
-
-	// if sixense is enabled, and the cm is trying to say something, and it's not trying to show the power up screens, and the controllers arent docked show the frame
-	if( g_pSixenseInput->IsEnabled() && 
-		m_pControllerManager->isMenuVisible() &&
-		!power_up_screens_showing && 
-		!controllers_docked ) 
-	{
-		if( !SixenseInput::m_SixenseFrame->IsVisible() ) 
-		{
-			SixenseInput::m_SixenseFrame->SetVisible( true );
-			SixenseInput::m_SixenseFrame->MoveToFront();
-
-			// Pause the engine if we can...
-			engine->ClientCmd_Unrestricted( "setpause nomsg" );
-		}
-	}
-	else 
-	{
-		if( SixenseInput::m_SixenseFrame->IsVisible() ) 	// otherwise turn it off
-
-		{
-			SixenseInput::m_SixenseFrame->SetVisible( false );
-			engine->ClientCmd_Unrestricted( "unpause nomsg" );
-
-		}
-	}
-
-}
-#endif
-
 static void controller_manager_setup_callback( sixenseUtils::IControllerManager::setup_step SetupStep )
 {
 
@@ -546,36 +498,7 @@ static void controller_manager_setup_callback( sixenseUtils::IControllerManager:
 
 void SixenseInput::controllerManagerCallback( int iSetupStep )
 {
-#if 0
-	Msg( "controller_manager_setup_callback: %s\n", m_pControllerManager->getTextureFileName() );
-
-	if ( m_pControllerManager->isMenuVisible() )
-	{
-
-		if ( SixenseInput::m_SixenseFrame )
-		{
-
-			sixenseUtils::sixense_utils_string tex_name = m_pControllerManager->getTextureFileName();
-
-			std::string image_name( tex_name.begin(), tex_name.end() );
-
-			image_name = image_name.substr( image_name.find_last_of( '/' ) );
-			image_name = image_name.substr( 0, image_name.find_first_of( '.' ) );
-
-			CUtlString cm_str( "../sixense_controller_manager" );
-			cm_str.Append( image_name.c_str() );
-
-			SixenseInput::m_SixenseFrame->setImage( cm_str );
-
-		}
-	}
-
-	if ( m_pControllerManager->shouldPlaySound() == sixenseUtils::IControllerManager::SUCCESS_BEEP )
-	{
-		vgui::surface()->PlaySound( "UI/buttonclickrelease.wav" );
-	}
-#endif
-
+	// TODO: Does nothing
 }
 
 #ifdef PORTAL2
@@ -736,32 +659,6 @@ static void sendAbsoluteMouseMove( float x, float y )
 	SendInput( 1, input_ev, sizeof( INPUT ) );
 #endif
 }
-#endif
-
-#if 0
-#ifdef DEBUG
-extern "C" int sixenseSetDebugParam( const char *param_name, float val );
-extern "C" int sixenseGetDebugParam( const char *param_name, float *val );
-static void inc_debug_val( const CCommand &args )
-{
-
-	if ( args.ArgC() != 3 )
-	{
-		Warning( "Incorrect parameters. Format: sixense_set_debug_val <var> <val>\n" );
-		return;
-	}
-
-	float current;
-	sixenseGetDebugParam( args[1], &current );
-
-	float new_val = current + atof( args[2] );
-	sixenseSetDebugParam( args[1], new_val );
-
-	Msg( "set \"%s\" to %f\n", args[1], new_val );
-}
-
-ConCommand sixense_inc_debug_val( "sixense_inc_debug_val", inc_debug_val );
-#endif
 #endif
 
 void SixenseConvarChanged( IConVar *var, const char *pOldValue, float flOldValue )
@@ -2333,16 +2230,10 @@ void SixenseInput::SetPlayerHandPositions( CUserCmd *pCmd, float flFrametime )
 
 void SixenseInput::SixenseUpdateControllerManager()
 {
-
 	if( !m_bIsEnabled )
 		return;
 
 	m_pControllerManager->update( m_pACD );
-
-#if 0
-	update_controller_manager_visibility( &acd );
-#endif
-
 }
 
 
@@ -3194,10 +3085,6 @@ void SixenseInput::SixenseUpdateMouseCursor()
 		m_nRightIndex = m_pControllerManager->getIndex( sixenseUtils::IControllerManager::P1L );
 	}
 
-#if 0
-	sixenseUtils::mouseAndKeyboardWin32::processQueue();
-#endif
-
 	// Keep track of when the left button is down so we can turn it off if we leave mouse mode
 	static bool left_clicked = false;
 
@@ -3486,18 +3373,6 @@ QAngle SixenseInput::GetViewAngleOffset()
 	return QAngle(0.f, 0.f, 0.f );
 
 }
-
-#if 0
-static void printmat( std::string name, sixenseMath::Matrix4 mat )
-{
-	Msg( "%s\n", name.c_str() );
-	Msg( "[0][0]=%f  [1][0]=%f  [2][0]=%f  [3][0]=%f \n", mat[0][0], mat[1][0], mat[2][0], mat[3][0] );
-	Msg( "[0][1]=%f  [1][1]=%f  [2][1]=%f  [3][1]=%f \n", mat[0][1], mat[1][1], mat[2][1], mat[3][1] );
-	Msg( "[0][2]=%f  [1][2]=%f  [2][2]=%f  [3][2]=%f \n", mat[0][2], mat[1][2], mat[2][2], mat[3][2] );
-	Msg( "[0][3]=%f  [1][3]=%f  [2][3]=%f  [3][3]=%f \n\n", mat[0][3], mat[1][3], mat[2][3], mat[3][3] );
-
-}
-#endif
 
 matrix3x4_t ConvertMatrix( sixenseMath::Matrix4 ss_mat )
 {

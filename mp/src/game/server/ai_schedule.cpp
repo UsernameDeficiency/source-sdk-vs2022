@@ -78,17 +78,6 @@ bool CAI_SchedulesManager::LoadAllSchedules(void)
 			CAI_BaseNPC::m_nDebugBits |= bits_debugDisableAI;
 			DevMsg("ERROR:  Mistake in default schedule definitions, AI Disabled.\n");
 		}
-
-// UNDONE: enable this after the schedules are all loaded (right now some load in monster spawns)
-#if 0
-		// If not in developer mode, free the string memory.  Otherwise
-		// keep it around for debugging information
-		if (!g_pDeveloper->GetInt())
-		{
-			ClearStringRegistries();
-		}
-#endif
-
 	}
 	return true;
 }

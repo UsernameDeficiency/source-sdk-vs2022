@@ -1706,14 +1706,6 @@ bool CNPC_AttackHelicopter::FVisible( CBaseEntity *pEntity, int traceMask, CBase
 	if ( pEntity->GetFlags() & FL_NOTARGET )
 		return false;
 
-#if 0
-	// FIXME: only block LOS through opaque water
-	// don't look through water
-	if ((m_nWaterLevel != 3 && pEntity->m_nWaterLevel == 3) 
-		|| (m_nWaterLevel == 3 && pEntity->m_nWaterLevel == 0))
-		return false;
-#endif
-
 	Vector vecLookerOrigin = EyePosition();//look through the caller's 'eyes'
 	Vector vecTargetOrigin = pEntity->EyePosition();
 

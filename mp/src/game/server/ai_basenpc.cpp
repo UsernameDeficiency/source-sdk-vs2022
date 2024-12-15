@@ -142,7 +142,7 @@ ConVar  ai_debug_enemies( "ai_debug_enemies", "0" );
 ConVar	ai_rebalance_thinks( "ai_rebalance_thinks", "1" );
 ConVar	ai_use_efficiency( "ai_use_efficiency", "1" );
 ConVar	ai_use_frame_think_limits( "ai_use_frame_think_limits", "1" );
-ConVar	ai_default_efficient( "ai_default_efficient", ( IsX360() ) ? "1" : "0" );
+ConVar	ai_default_efficient( "ai_default_efficient", "0" );
 ConVar	ai_efficiency_override( "ai_efficiency_override", "0" );
 ConVar	ai_debug_efficiency( "ai_debug_efficiency", "0" );
 ConVar	ai_debug_dyninteractions( "ai_debug_dyninteractions", "0", FCVAR_NONE, "Debug the NPC dynamic interaction system." );
@@ -205,7 +205,7 @@ ConVar	ai_spread_pattern_focus_time( "ai_spread_pattern_focus_time","0.8" );
 ConVar	ai_reaction_delay_idle( "ai_reaction_delay_idle","0.3" );
 ConVar	ai_reaction_delay_alert( "ai_reaction_delay_alert", "0.1" );
 
-ConVar ai_strong_optimizations( "ai_strong_optimizations", ( IsX360() ) ? "1" : "0" );
+ConVar ai_strong_optimizations( "ai_strong_optimizations", "0" );
 bool AIStrongOpt( void )
 {
 	return ai_strong_optimizations.GetBool();
@@ -748,16 +748,6 @@ int CAI_BaseNPC::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 		m_iHealth = 1;
 	}
 
-#if 0
-	// HACKHACK Don't kill npcs in a script.  Let them break their scripts first
-	// THIS is a Half-Life 1 hack that's not cutting the mustard in the scripts
-	// that have been authored for Half-Life 2 thus far. (sjb)
-	if ( m_NPCState == NPC_STATE_SCRIPT )
-	{
-		SetCondition( COND_LIGHT_DAMAGE );
-	}
-#endif
-
 	// -----------------------------------
 	//  Fire outputs
  	// -----------------------------------
@@ -935,19 +925,6 @@ int CAI_BaseNPC::OnTakeDamage_Dead( const CTakeDamageInfo &info )
 		VectorNormalize( vecDir );
 		g_vecAttackDir = vecDir;
 	}
-
-#if 0// turn this back on when the bounding box issues are resolved.
-
-	SetGroundEntity( NULL );
-	GetLocalOrigin().z += 1;
-
-	// let the damage scoot the corpse around a bit.
-	if ( info.GetInflictor() && (info.GetAttacker()->GetSolid() != SOLID_TRIGGER) )
-	{
-		ApplyAbsVelocityImpulse( vecDir * -DamageForce( flDamage ) );
-	}
-
-#endif
 
 	// kill the corpse if enough damage was done to destroy the corpse and the damage is of a type that is allowed to destroy the corpse.
 	if ( g_pGameRules->Damage_ShouldGibCorpse( info.GetDamageType() ) )
@@ -2723,19 +2700,6 @@ void CAI_BaseNPC::MaintainLookTargets ( float flInterval )
 			return;
 		}
 	}
-
-#if 0
-	// --------------------------------------------------------
-	// First check if I've been assigned to look at an entity
-	// --------------------------------------------------------
-	CBaseEntity *lookTarget = EyeLookTarget();
-	if (lookTarget && ValidEyeTarget(lookTarget->EyePosition()))
-	{
-		SetHeadDirection(lookTarget->EyePosition(),flInterval);
-		SetViewtarget( lookTarget->EyePosition() );
-		return;
-	}
-#endif
 
 	// --------------------------------------------------------
 	// If I'm moving, look at my target position
@@ -5246,35 +5210,6 @@ bool CAI_BaseNPC::Weapon_IsBetterAvailable()
 //-----------------------------------------------------------------------------
 bool CAI_BaseNPC::WeaponLOSCondition(const Vector &ownerPos, const Vector &targetPos, bool bSetConditions )
 {
-#if 0
-	// @TODO (toml 03-07-04): this code might be better (not tested)
-	Vector vecLocalRelativePosition;
-	VectorITransform( npcOwner->Weapon_ShootPosition(), npcOwner->EntityToWorldTransform(), vecLocalRelativePosition );
-
-	// Compute desired test transform
-
-	// Compute desired x axis
-	Vector xaxis;
-	VectorSubtract( targetPos, ownerPos, xaxis );
-
-	// FIXME: Insert angle test here?
-	float flAngle = acos( xaxis.z / xaxis.Length() );
-
-	xaxis.z = 0.0f;
-	float flLength = VectorNormalize( xaxis );
-	if ( flLength < 1e-3 )
-	return false;
-
-	Vector yaxis( -xaxis.y, xaxis.x, 0.0f );
-
-	matrix3x4_t losTestToWorld;
-	MatrixInitialize( losTestToWorld, ownerPos, xaxis, yaxis, zaxis );
-
-	Vector barrelPos;
-	VectorTransform( vecLocalRelativePosition, losTestToWorld, barrelPos );
-
-#endif
-
 	bool bHaveLOS = true;
 
 	if (GetActiveWeapon())
@@ -7249,9 +7184,6 @@ void CAI_BaseNPC::AddRelationship( const char *pszRelationship, CBaseEntity *pAc
 //-----------------------------------------------------------------------------
 void CAI_BaseNPC::AddEntityRelationship( CBaseEntity *pEntity, Disposition_t nDisposition, int nPriority )
 {
-#if 0
-	ForceGatherConditions();
-#endif
 	BaseClass::AddEntityRelationship( pEntity, nDisposition, nPriority );
 }
 
@@ -7259,9 +7191,6 @@ void CAI_BaseNPC::AddEntityRelationship( CBaseEntity *pEntity, Disposition_t nDi
 //-----------------------------------------------------------------------------
 void CAI_BaseNPC::AddClassRelationship( Class_T nClass, Disposition_t nDisposition, int nPriority )
 {
-#if 0
-	ForceGatherConditions();
-#endif
 	BaseClass::AddClassRelationship( nClass, nDisposition, nPriority );
 }
 
@@ -8210,11 +8139,6 @@ void CAI_BaseNPC::HandleAnimEvent( animevent_t *pEvent )
 			m_hCine->AllowInterrupt( true );
 		break;
 
-#if 0
-	case SCRIPT_EVENT_INAIR:			// Don't engine->DropToFloor()
-	case SCRIPT_EVENT_ENDANIMATION:		// Set ending animation sequence to
-		break;
-#endif
 	case SCRIPT_EVENT_BODYGROUPON:
 	case SCRIPT_EVENT_BODYGROUPOFF:
 	case SCRIPT_EVENT_BODYGROUPTEMP:
