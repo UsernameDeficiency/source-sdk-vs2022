@@ -659,6 +659,33 @@ CBasePlayer *UTIL_GetLocalPlayer( void )
 	return UTIL_PlayerByIndex( 1 );
 }
 
+
+//
+// Return the listen server host.
+// If that's not possible, try to return any player
+// Multiplayer alternative to UTIL_GetLocalPlayer, from https://developer.valvesoftware.com/wiki/GetLocalPlayer
+// 
+CBasePlayer *UTIL_GetMPPlayer( void )
+{
+	// try to return the listenserver-host
+	CBasePlayer* pHost = UTIL_GetListenServerHost();
+	if (pHost) {
+		return pHost;
+	}
+
+	// try to return any other client on the server
+	for (int i = 1; i < gpGlobals->maxClients; i++)
+	{
+		CBasePlayer* pPlayer = UTIL_PlayerByIndex(i);
+
+		if (pPlayer) {
+			return pPlayer;
+		}
+	}
+
+	return NULL;
+}
+
 //
 // Get the local player on a listen server - this is for multiplayer use only
 // 

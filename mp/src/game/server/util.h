@@ -229,6 +229,9 @@ CBasePlayer *UTIL_PlayerBySteamID( const CSteamID &steamID );
 // not useable in multiplayer - see UTIL_GetListenServerHost()
 CBasePlayer* UTIL_GetLocalPlayer( void );
 
+// Multiplayer alternative to UTIL_GetLocalPlayer, from https://developer.valvesoftware.com/wiki/GetLocalPlayer
+CBasePlayer* UTIL_GetMPPlayer( void );
+
 // get the local player on a listen server
 CBasePlayer *UTIL_GetListenServerHost( void );
 
