@@ -324,86 +324,6 @@ float SrgbLinearToGamma( float flLinearValue )
 	return ( x <= 0.0031308f ) ? ( x * 12.92f ) : ( 1.055f * pow( x, ( 1.0f / 2.4f ) ) ) - 0.055f;
 }
 
-float X360GammaToLinear( float fl360GammaValue )
-{
-	float flLinearValue;
-
-	fl360GammaValue = clamp( fl360GammaValue, 0.0f, 1.0f );
-	if ( fl360GammaValue < ( 96.0f / 255.0f ) )
-	{
-		if ( fl360GammaValue < ( 64.0f / 255.0f ) )
-		{
-			flLinearValue = fl360GammaValue * 255.0f;
-		}
-		else
-		{
-			flLinearValue = fl360GammaValue * ( 255.0f * 2.0f ) - 64.0f;
-			flLinearValue += floor( flLinearValue * ( 1.0f / 512.0f ) );
-		}
-	}
-	else
-	{
-		if( fl360GammaValue < ( 192.0f / 255.0f ) )
-		{
-			flLinearValue = fl360GammaValue * ( 255.0f * 4.0f ) - 256.0f;
-			flLinearValue += floor( flLinearValue * ( 1.0f / 256.0f ) );
-		}
-		else
-		{
-			flLinearValue = fl360GammaValue * ( 255.0f * 8.0f ) - 1024.0f;
-			flLinearValue += floor( flLinearValue * ( 1.0f / 128.0f ) );
-		}
-	}
-
-	flLinearValue *= 1.0f / 1023.0f;
-
-	flLinearValue = clamp( flLinearValue, 0.0f, 1.0f );
-	return flLinearValue;
-}
-
-float X360LinearToGamma( float flLinearValue )
-{
-	float fl360GammaValue;
-
-	flLinearValue = clamp( flLinearValue, 0.0f, 1.0f );
-	if ( flLinearValue < ( 128.0f / 1023.0f ) )
-	{
-		if ( flLinearValue < ( 64.0f / 1023.0f ) )
-		{
-			fl360GammaValue = flLinearValue * ( 1023.0f * ( 1.0f / 255.0f ) );
-		}
-		else
-		{
-			fl360GammaValue = flLinearValue * ( ( 1023.0f / 2.0f ) * ( 1.0f / 255.0f ) ) + ( 32.0f / 255.0f );
-		}
-	}
-	else
-	{
-		if ( flLinearValue < ( 512.0f / 1023.0f ) )
-		{
-			fl360GammaValue = flLinearValue * ( ( 1023.0f / 4.0f ) * ( 1.0f / 255.0f ) ) + ( 64.0f / 255.0f );
-		}
-		else
-		{
-			fl360GammaValue = flLinearValue * ( ( 1023.0f /8.0f ) * ( 1.0f / 255.0f ) ) + ( 128.0f /255.0f ); // 1.0 -> 1.0034313725490196078431372549016
-			if ( fl360GammaValue > 1.0f )
-			{
-				fl360GammaValue = 1.0f;
-			}
-		}
-	}
-
-	fl360GammaValue = clamp( fl360GammaValue, 0.0f, 1.0f );
-	return fl360GammaValue;
-}
-
-float SrgbGammaTo360Gamma( float flSrgbGammaValue )
-{
-	float flLinearValue = SrgbGammaToLinear( flSrgbGammaValue );
-	float fl360GammaValue = X360LinearToGamma( flLinearValue );
-	return fl360GammaValue;
-}
-
 // convert texture to linear 0..1 value
 float TextureToLinear( int c )
 {
@@ -453,79 +373,6 @@ void ColorRGBExp32ToVector( const ColorRGBExp32& in, Vector& out )
 	out.y = 255.0f * TexLightToLinear( in.g, in.exponent );
 	out.z = 255.0f * TexLightToLinear( in.b, in.exponent );
 }
-
-#if 0
-// assumes that the desired mantissa range is 128..255
-static int VectorToColorRGBExp32_CalcExponent( float in )
-{
-	int power = 0;
-	
-	if( in != 0.0f )
-	{
-		while( in > 255.0f )
-		{
-			power += 1;
-			in *= 0.5f;
-		}
-		
-		while( in < 128.0f )
-		{
-			power -= 1;
-			in *= 2.0f;
-		}
-	}
-
-	return power;
-}
-
-void VectorToColorRGBExp32( const Vector& vin, ColorRGBExp32 &c )
-{
-	Vector v = vin;
-	Assert( s_bMathlibInitialized );
-	Assert( v.x >= 0.0f && v.y >= 0.0f && v.z >= 0.0f );
-	int i;		
-	float max = v[0];				
-	for( i = 1; i < 3; i++ )
-	{
-		// Get the maximum value.
-		if( v[i] > max )
-		{
-			max = v[i];
-		}
-	}
-				
-	// figure out the exponent for this luxel.
-	int exponent = VectorToColorRGBExp32_CalcExponent( max );
-				
-	// make the exponent fits into a signed byte.
-	if( exponent < -128 )
-	{
-		exponent = -128;
-	}
-	else if( exponent > 127 )
-	{
-		exponent = 127;
-	}
-				
-	// undone: optimize with a table
-	float scalar = pow( 2.0f, -exponent );
-	// convert to mantissa x 2^exponent format
-	for( i = 0; i < 3; i++ )
-	{
-		v[i] *= scalar;
-		// clamp
-		if( v[i] > 255.0f )
-		{
-			v[i] = 255.0f;
-		}
-	}
-	c.r = ( unsigned char )v[0];
-	c.g = ( unsigned char )v[1];
-	c.b = ( unsigned char )v[2];
-	c.exponent = ( signed char )exponent;
-}
-
-#else
 
 // given a floating point number  f, return an exponent e such that
 // for f' = f * 2^e,  f is on [128..255].
@@ -620,13 +467,6 @@ void VectorToColorRGBExp32( const Vector& vin, ColorRGBExp32 &c )
 		c.g = green;
 		c.b = blue;
 	}
-	/*
-	c.r = ( unsigned char )(vin.x * scalar);
-	c.g = ( unsigned char )(vin.y * scalar);
-	c.b = ( unsigned char )(vin.z * scalar);
-	*/
 
 	c.exponent = ( signed char )exponent;
 }
-
-#endif

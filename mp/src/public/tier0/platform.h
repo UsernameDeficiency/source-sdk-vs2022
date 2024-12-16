@@ -147,13 +147,6 @@ typedef signed char int8;
 		typedef unsigned __int32 uintp;
 	#endif
 
-	#if defined( _X360 )
-		#ifdef __m128
-			#undef __m128
-		#endif
-		#define __m128				__vector4
-	#endif
-
 	// Use this to specify that a function is an override of a virtual function.
 	// This lets the compiler catch cases where you meant to override a virtual
 	// function but you accidentally changed the function signature and created

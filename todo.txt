@@ -23,7 +23,6 @@ Xbox
 	CHudTexture::Precache (360 only)
 	vtf.h: ConvertVTFTo360Format, GetVTFPreload360Data, more...
 	PREFETCH360
-	FSOPEN_NEVERINPACK
 	CREATERENDERTARGETFLAGS_NOEDRAM, CREATERENDERTARGETFLAGS_TEMP
 
 Byt t.ex. isPC till compile time?

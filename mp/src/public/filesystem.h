@@ -264,7 +264,6 @@ enum FilesystemOpenExFlags_t
 	FSOPEN_UNBUFFERED		= (1 << 0),
 	FSOPEN_FORCE_TRACK_CRC	= (1 << 1),		// This makes it calculate a CRC for the file (if the file came from disk) regardless 
 											// of the IFileList passed to RegisterFileWhitelist.
-	FSOPEN_NEVERINPACK	    = (1 << 2),		// 360 only, hint to FS that file is not allowed to be in pack file
 };
 
 #define FILESYSTEM_INVALID_HANDLE	( FileHandle_t )0
