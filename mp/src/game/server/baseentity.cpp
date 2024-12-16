@@ -4662,34 +4662,6 @@ static CWatchForModelAccess g_WatchForModels;
 #define CL_EVENT_MFOOTSTEP_RIGHT	6007
 
 //-----------------------------------------------------------------------------
-// Precache model sound. Requires a local symbol table to prevent
-// a very expensive call to PrecacheScriptSound().
-//-----------------------------------------------------------------------------
-void CBaseEntity::PrecacheSoundHelper( const char *pName )
-{
-	// TODO: What is happening here? "360 only" comment in non-360 block
-	if ( !IsX360() )
-	{
-		// 360 only
-		Assert( 0 );
-		return;
-	}
-
-	if ( !pName || !pName[0] )
-	{
-		return;
-	}
-
-	if ( UTL_INVAL_SYMBOL == g_ModelSoundsSymbolHelper.Find( pName ) )
-	{
-		g_ModelSoundsSymbolHelper.AddString( pName );
-
-		// very expensive, only call when required
-		PrecacheScriptSound( pName );
-	}
-}
-
-//-----------------------------------------------------------------------------
 // Precache model components
 //-----------------------------------------------------------------------------
 void CBaseEntity::PrecacheModelComponents( int nModelIndex )

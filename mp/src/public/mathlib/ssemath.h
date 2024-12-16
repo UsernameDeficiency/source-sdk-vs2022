@@ -128,9 +128,6 @@ extern const ALIGN16 int32 g_SIMD_Low16BitsMask[] ALIGN16_POST;			// 0xffff x 4
 // to mask out the tail, g_SIMD_SkipTailMask[N & 3] what you want to use for the last iteration.
 extern const int32 ALIGN16 g_SIMD_SkipTailMask[4][4] ALIGN16_POST;
 
-// Define prefetch macros.
-#define PREFETCH360(x,y) // Do nothing for non-X360 platforms
-
 #if USE_STDC_FOR_SIMD
 
 //---------------------------------------------------------------------

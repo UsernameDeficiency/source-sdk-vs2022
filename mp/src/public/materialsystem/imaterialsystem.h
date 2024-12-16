@@ -130,7 +130,6 @@ enum MaterialPrimitiveType_t
 	MATERIAL_LINE_LOOP,	// a single line loop
 	MATERIAL_POLYGON,	// this is a *single* polygon
 	MATERIAL_QUADS,
-	MATERIAL_INSTANCED_QUADS, // (X360) like MATERIAL_QUADS, but uses vertex instancing
 
 	// This is used for static meshes that contain multiple types of
 	// primitive types.	When calling draw, you'll need to specify
@@ -287,9 +286,6 @@ private:
 #define CREATERENDERTARGETFLAGS_HDR				0x00000001
 #define CREATERENDERTARGETFLAGS_AUTOMIPMAP		0x00000002
 #define CREATERENDERTARGETFLAGS_UNFILTERABLE_OK 0x00000004
-// XBOX ONLY:
-#define CREATERENDERTARGETFLAGS_NOEDRAM			0x00000008 // inhibit allocation in 360 EDRAM
-#define CREATERENDERTARGETFLAGS_TEMP			0x00000010 // only allocates memory upon first resolve, destroyed at level end
 
 //-----------------------------------------------------------------------------
 // allowed stencil operations. These match the d3d operations

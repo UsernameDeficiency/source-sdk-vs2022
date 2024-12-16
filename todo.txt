@@ -6,24 +6,18 @@ Ta bort:
 	SIXENSE
 	_GAMECONSOLE, IsGameConsole
 	EPISODIC?
+	USE_STDC_FOR_SIMD
+	VECTOR_NO_SLOW_OPERATIONS
 
 Xbox
 	// 360 only
 	// Xbox 360 only
 	CLIENT_DLL för Xbox?
 	IsXbox
-	X360
 	bFirstFrame (endast falsk på 360)
 	bPerformSoftwareAA (endast till 360)
-	PLATFORM_X360
-	BSP_USE_LESS_MEMORY (360 only)
-	USE_M64S
 	GetPlatformExt
-	VPROF_PIX (360 only)
 	CHudTexture::Precache (360 only)
-	vtf.h: ConvertVTFTo360Format, GetVTFPreload360Data, more...
-	PREFETCH360
-	CREATERENDERTARGETFLAGS_NOEDRAM, CREATERENDERTARGETFLAGS_TEMP
 
 Byt t.ex. isPC till compile time?
 

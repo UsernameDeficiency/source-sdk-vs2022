@@ -88,7 +88,6 @@ struct MaterialSystem_Config_t
 	float m_fGammaTVRangeMin;
 	float m_fGammaTVRangeMax;
 	float m_fGammaTVExponent;
-	bool m_bGammaTVEnabled;
 
 	int m_nAASamples;
 	int m_nForceAnisotropicLevel;
@@ -180,7 +179,6 @@ struct MaterialSystem_Config_t
 		m_fGammaTVRangeMin = 16.0f;
 		m_fGammaTVRangeMax = 255.0f;
 		m_fGammaTVExponent = 2.5;
-		m_bGammaTVEnabled = IsX360();
 
 		m_nAASamples = 1;
 		m_bShadowDepthTexture = false;

@@ -957,8 +957,9 @@ bool CAI_NetworkManager::IsAIFileCurrent ( const char *szMapName )
 		}
 	}
 	
-	Q_snprintf( szBspFilename, sizeof( szBspFilename ), "maps/%s%s.bsp" ,szMapName, GetPlatformExt() );
-	Q_snprintf( szGraphFilename, sizeof( szGraphFilename ), "maps/graphs/%s%s.ain", szMapName, GetPlatformExt() );
+	// TODO: Below Q_snprintf calls for x360 only?
+	Q_snprintf( szBspFilename, sizeof( szBspFilename ), "maps/%s%s.bsp" ,szMapName, "" );
+	Q_snprintf( szGraphFilename, sizeof( szGraphFilename ), "maps/graphs/%s%s.ain", "" );
 	
 	int iCompare;
 	if ( engine->CompareFileTime( szBspFilename, szGraphFilename, &iCompare ) )

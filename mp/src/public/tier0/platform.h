@@ -84,7 +84,6 @@
 	#define IsWindows() true
 	#define IsPC() true
 	#define IsConsole() false
-	#define IsX360() false
 	#define IsPS3() false
 	#define IS_WINDOWS_PC
 	#define PLATFORM_WINDOWS_PC 1 // Windows PC
@@ -107,7 +106,6 @@
 	#define IsPC() true
 	#define IsWindows() false
 	#define IsConsole() false
-	#define IsX360() false
 	#define IsPS3() false
 	#if defined( LINUX )
 		#define IsLinux() true
@@ -189,16 +187,8 @@ typedef signed char int8;
 //-----------------------------------------------------------------------------
 // Set up platform type defines.
 //-----------------------------------------------------------------------------
-#if defined( PLATFORM_X360 )
-	#if !defined( _GAMECONSOLE )
-		#define _GAMECONSOLE
-	#endif
-	#define IsPC()			false
-	#define IsGameConsole()	true
-#else
-	#define IsPC()			true
-	#define IsGameConsole()	false
-#endif
+#define IsPC()			true
+#define IsGameConsole()	false
 
 #ifdef PLATFORM_64BITS
 	#define IsPlatform64Bits()	true
@@ -1154,10 +1144,6 @@ PLATFORM_INTERFACE bool Is64BitOS();
 #define WM_XMP_PLAYBACKBEHAVIORCHANGED		(WM_USER + 122)
 #define WM_XMP_PLAYBACKCONTROLLERCHANGED	(WM_USER + 123)
 
-inline const char *GetPlatformExt( void )
-{
-	return IsX360() ? ".360" : "";
-}
 
 // flat view, 6 hw threads
 #define XBOX_PROCESSOR_0			( 1<<0 )

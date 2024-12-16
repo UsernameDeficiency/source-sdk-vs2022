@@ -2888,9 +2888,6 @@ inline void CIndexBuilder::GenerateIndices( MaterialPrimitiveType_t primitiveTyp
 
 	switch( primitiveType )
 	{
-	case MATERIAL_INSTANCED_QUADS:
-		Assert(0); // Shouldn't get here (this primtype is unindexed)
-		break;
 	case MATERIAL_QUADS:
 		GenerateQuadIndexBuffer( pIndices, nIndexCount, m_nIndexOffset );
 		break;
@@ -3209,11 +3206,6 @@ inline void CMeshBuilder::ComputeNumVertsAndIndices( int *pMaxVertices, int *pMa
 		*pMaxIndices = nPrimitiveCount * 6;
 		break;
 
-	case MATERIAL_INSTANCED_QUADS:
-		*pMaxVertices = nPrimitiveCount;
-		*pMaxIndices = 0; // This primtype is unindexed
-		break;
-
 	case MATERIAL_POLYGON:
 		*pMaxVertices = nPrimitiveCount;
 		*pMaxIndices = (nPrimitiveCount - 2) * 3;
@@ -3238,10 +3230,6 @@ inline int CMeshBuilder::IndicesFromVertices( MaterialPrimitiveType_t type, int 
 	case MATERIAL_QUADS:
 		Assert( (nVertexCount & 0x3) == 0 );
 		return (nVertexCount * 6) / 4;
-
-	case MATERIAL_INSTANCED_QUADS:
-		// This primtype is unindexed
-		return 0;
 
 	case MATERIAL_POLYGON:
 		Assert( nVertexCount >= 3 );
@@ -3285,10 +3273,6 @@ inline void CMeshBuilder::Begin( IMesh *pMesh, MaterialPrimitiveType_t type, int
 
 	switch( type )
 	{
-	case MATERIAL_INSTANCED_QUADS:
-		m_pMesh->SetPrimitiveType( MATERIAL_INSTANCED_QUADS );
-		break;
-
 	case MATERIAL_QUADS:
 	case MATERIAL_POLYGON:
 		m_pMesh->SetPrimitiveType( MATERIAL_TRIANGLES );
@@ -3327,7 +3311,7 @@ inline void CMeshBuilder::Begin( IMesh* pMesh, MaterialPrimitiveType_t type, int
 	// NOTE: We can't specify the indices when we use quads, polygons, or
 	// linestrips; they aren't actually directly supported by 
 	// the material system
-	Assert( (type != MATERIAL_QUADS) && (type != MATERIAL_INSTANCED_QUADS) && (type != MATERIAL_POLYGON) &&
+	Assert( (type != MATERIAL_QUADS) && (type != MATERIAL_POLYGON) &&
 		(type != MATERIAL_LINE_STRIP) && (type != MATERIAL_LINE_LOOP));
 
 	// Dx8 doesn't support indexed points...

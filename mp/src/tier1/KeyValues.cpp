@@ -2192,9 +2192,6 @@ bool EvaluateConditional( const char *str )
 	if ( *str == '!' )
 		bNot = true;
 
-	if ( Q_stristr( str, "$X360" ) )
-		return IsX360() ^ bNot;
-	
 	if ( Q_stristr( str, "$WIN32" ) )
 		return IsPC() ^ bNot; // hack hack - for now WIN32 really means IsPC
 
