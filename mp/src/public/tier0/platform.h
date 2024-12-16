@@ -79,7 +79,6 @@
 	#define PLATFORM_WINDOWS 1 // Windows PC or Xbox 360
 	#define IsWindows() true
 	#define IsPC() true
-	#define IsConsole() false
 	#define IS_WINDOWS_PC
 	#define PLATFORM_WINDOWS_PC 1 // Windows PC
 	#ifdef _WIN64
@@ -100,7 +99,6 @@
 #elif defined(POSIX)
 	#define IsPC() true
 	#define IsWindows() false
-	#define IsConsole() false
 	#if defined( LINUX )
 		#define IsLinux() true
 	#else

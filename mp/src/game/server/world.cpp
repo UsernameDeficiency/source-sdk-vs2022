@@ -523,8 +523,9 @@ void CWorld::Spawn( void )
 
 	g_EventQueue.Init();
 	Precache( );
-	GlobalEntity_Add( "is_console", STRING(gpGlobals->mapname), ( IsConsole() ) ? GLOBAL_ON : GLOBAL_OFF );
-	GlobalEntity_Add( "is_pc", STRING(gpGlobals->mapname), ( !IsConsole() ) ? GLOBAL_ON : GLOBAL_OFF );
+	// TODO: Console code has been deprecated, can these be removed?
+	GlobalEntity_Add( "is_console", STRING(gpGlobals->mapname), GLOBAL_OFF );
+	GlobalEntity_Add( "is_pc", STRING(gpGlobals->mapname), GLOBAL_ON );
 }
 
 static const char *g_DefaultLightstyles[] =
