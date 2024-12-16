@@ -105,7 +105,6 @@
 #endif
 #include "vgui/ILocalize.h"
 #include "vgui/IVGui.h"
-#include "ixboxsystem.h"
 #include "ipresence.h"
 #include "engine/imatchmaking.h"
 #include "cdll_bounded_cvars.h"
@@ -201,7 +200,6 @@ IGameEventManager2 *gameeventmanager = NULL;
 ISoundEmitterSystemBase *soundemitterbase = NULL;
 IInputSystem *inputsystem = NULL;
 ISceneFileCache *scenefilecache = NULL;
-IXboxSystem *xboxsystem = NULL;	// Xbox 360 only
 IMatchmaking *matchmaking = NULL;
 IUploadGameStats *gamestatsuploader = NULL;
 IClientReplayContext *g_pClientReplayContext = NULL;

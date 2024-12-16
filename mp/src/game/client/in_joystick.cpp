@@ -124,7 +124,7 @@ extern ConVar thirdperson_screenspace;
 //-----------------------------------------------------------------
 bool CInput::EnableJoystickMode()
 {
-	return IsConsole() || in_joystick.GetBool();
+	return in_joystick.GetBool();
 }
 
 
@@ -604,21 +604,13 @@ float CInput::ScaleAxisValue( const float axisValue, const float axisThreshold )
 	// has a (potentially) unique threshold value.  If all axes were restricted to a single threshold
 	// as they are on the Xbox, this function could move to inputsystem and be slightly more optimal.
 	float result = 0.f;
-	if ( IsPC() )
+	if ( axisValue < -axisThreshold )
 	{
-		if ( axisValue < -axisThreshold )
-		{
-			result = ( axisValue + axisThreshold ) / ( MAX_BUTTONSAMPLE - axisThreshold );
-		}
-		else if ( axisValue > axisThreshold )
-		{
-			result = ( axisValue - axisThreshold ) / ( MAX_BUTTONSAMPLE - axisThreshold );
-		}
+		result = ( axisValue + axisThreshold ) / ( MAX_BUTTONSAMPLE - axisThreshold );
 	}
-	else
+	else if ( axisValue > axisThreshold )
 	{
-		// IsXbox
-		result =  axisValue * ( 1.f / MAX_BUTTONSAMPLE );
+		result = ( axisValue - axisThreshold ) / ( MAX_BUTTONSAMPLE - axisThreshold );
 	}
 
 	return result;
