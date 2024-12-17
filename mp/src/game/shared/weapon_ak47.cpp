@@ -20,10 +20,6 @@
 
 #include "weapon_hl2mpbasehlmpcombatweapon.h"
 
-#ifdef CLIENT_DLL
-#define CWeaponAK47 C_WeaponAK47
-#endif
-
 #include "tier0/memdbgon.h"
 
 // Modify this to alter the rate of fire
@@ -33,6 +29,9 @@
 // If you set it to 1 the gun will be semi-auto. If you set it to 3 the gun will fire three-round bursts
 #define BURST 500
 
+#ifdef CLIENT_DLL
+#define CWeaponAK47 C_WeaponAK47
+#endif
 
 //-----------------------------------------------------------------------------
 // CWeaponAK47
@@ -41,7 +40,9 @@ class CWeaponAK47 : public CBaseHL2MPCombatWeapon
 {
 public:
 	DECLARE_CLASS(CWeaponAK47, CBaseHL2MPCombatWeapon);
+
 	CWeaponAK47();
+
 	DECLARE_NETWORKCLASS();
 	DECLARE_PREDICTABLE();
 
@@ -53,7 +54,6 @@ public:
 	void			AddViewKick();
 	void			DryFire();
 	void			GetStance();
-	Vector			cone;
 	bool			Holster(CBaseCombatWeapon* pSwitchingTo = NULL); // Required so that you un-zoom when switching weapons
 	Activity		GetPrimaryAttackActivity();
 
@@ -66,8 +66,8 @@ public:
 	// Modify this part to control the general accuracy of the gun
 	virtual const Vector& GetBulletSpread()
 	{
-		cone = VECTOR_CONE_1DEGREES;
-		//TODO: Try static Vector cone
+		Vector cone = VECTOR_CONE_1DEGREES;
+
 		// If you don't need stance and health dependent accuracy, you can just remove this
 		if (m_iStance == E_DUCK)
 			cone = VECTOR_CONE_1DEGREES;
@@ -102,9 +102,8 @@ public:
 
 	void ToggleZoom();
 	void CheckZoomToggle();
-	#ifndef CLIENT_DLL
-		DECLARE_ACTTABLE();
-	#endif
+
+	DECLARE_ACTTABLE();
 
 private:
 	CNetworkVar(int, m_iBurst);
@@ -135,26 +134,24 @@ END_NETWORK_TABLE()
 BEGIN_PREDICTION_DATA(CWeaponAK47)
 END_PREDICTION_DATA()
 
-LINK_ENTITY_TO_CLASS( weapon_ak47, CWeaponAK47 );
-PRECACHE_WEAPON_REGISTER(weapon_ak47);
+LINK_ENTITY_TO_CLASS(weapon_AK47, CWeaponAK47);
+PRECACHE_WEAPON_REGISTER(weapon_AK47);
 
-#ifndef CLIENT_DLL
-
-acttable_t	CWeaponAK47::m_acttable[] =
+acttable_t CWeaponAK47::m_acttable[] =
 {
-	{ ACT_HL2MP_IDLE,					ACT_HL2MP_IDLE_AR2,					false },
-	{ ACT_HL2MP_RUN,					ACT_HL2MP_RUN_AR2,					false },
-	{ ACT_HL2MP_IDLE_CROUCH,			ACT_HL2MP_IDLE_CROUCH_AR2,			false },
-	{ ACT_HL2MP_WALK_CROUCH,			ACT_HL2MP_WALK_CROUCH_AR2,			false },
-	{ ACT_HL2MP_GESTURE_RANGE_ATTACK,	ACT_HL2MP_GESTURE_RANGE_ATTACK_AR2,	false },
-	{ ACT_HL2MP_GESTURE_RELOAD,			ACT_HL2MP_GESTURE_RELOAD_AR2,		false },
-	{ ACT_HL2MP_JUMP,					ACT_HL2MP_JUMP_AR2,					false },
-	{ ACT_RANGE_ATTACK1,				ACT_RANGE_ATTACK_AR2,				false },
+	{ ACT_MP_STAND_IDLE,					ACT_HL2MP_IDLE_AR2,						false },
+	{ ACT_MP_CROUCH_IDLE,					ACT_HL2MP_IDLE_CROUCH_AR2,				false },
+	{ ACT_MP_RUN,							ACT_HL2MP_RUN_AR2,						false },
+	{ ACT_MP_CROUCHWALK,					ACT_HL2MP_WALK_CROUCH_AR2,				false },
+	{ ACT_MP_ATTACK_STAND_PRIMARYFIRE,		ACT_HL2MP_GESTURE_RANGE_ATTACK_AR2,		false },
+	{ ACT_MP_ATTACK_CROUCH_PRIMARYFIRE,		ACT_HL2MP_GESTURE_RANGE_ATTACK_AR2,		false },
+	{ ACT_MP_RELOAD_STAND,					ACT_HL2MP_GESTURE_RELOAD_AR2,			false },
+	{ ACT_MP_RELOAD_CROUCH,					ACT_HL2MP_GESTURE_RELOAD_AR2,			false },
+	{ ACT_MP_JUMP, 							ACT_HL2MP_JUMP_AR2,						false },
 };
 
 IMPLEMENT_ACTTABLE(CWeaponAK47);
 
-#endif
 //-----------------------------------------------------------------------------
 // Purpose: Constructor
 //-----------------------------------------------------------------------------
@@ -272,7 +269,6 @@ void CWeaponAK47::ItemPostFrame()
 
 	// Check the character's current stance for the accuracy calculation
 	GetStance();
-	
 }
 
 //-----------------------------------------------------------------------------
@@ -296,8 +292,7 @@ bool CWeaponAK47::Reload()
 	if (fRet)
 	{
 		WeaponSound(RELOAD);
-		//Apparently an OB version function that doesn't exist here
-		//ToHL2MPPlayer(GetOwner())->DoAnimationEvent(PLAYERANIMEVENT_RELOAD);
+		ToHL2MPPlayer(GetOwner())->DoAnimationEvent(PLAYERANIMEVENT_RELOAD);
 
 		// Reset the burst counter to the default
 		m_iBurst = BURST;
