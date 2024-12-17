@@ -19,10 +19,7 @@
 #include "tier1/bitbuf.h"
 #include "inputsystem/ButtonCode.h"
 #include "modes.h"
-
-#if !defined( _X360 )
 #include "xbox/xboxstubs.h"
-#endif
 
 //-----------------------------------------------------------------------------
 // forward declarations
@@ -514,7 +511,6 @@ public:
 	virtual const char		*GetMostRecentSaveGame( void ) = 0;
 	virtual void			SetMostRecentSaveGame( const char *lpszFilename ) = 0;
 
-	virtual void			StartXboxExitingProcess() = 0;
 	virtual bool			IsSaveInProgress() = 0;
 	virtual uint			OnStorageDeviceAttached( void ) = 0;
 	virtual void			OnStorageDeviceDetached( void ) = 0;

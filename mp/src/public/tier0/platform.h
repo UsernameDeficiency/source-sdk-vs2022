@@ -76,7 +76,7 @@
 	#define IsLinux() false
 	#define IsOSX() false
 	#define IsPosix() false
-	#define PLATFORM_WINDOWS 1 // Windows PC or Xbox 360
+	#define PLATFORM_WINDOWS 1
 	#define IsWindows() true
 	#define IsPC() true
 	#define IS_WINDOWS_PC

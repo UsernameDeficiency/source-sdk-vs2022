@@ -383,7 +383,7 @@ void CAI_ScriptedSequence::InputBeginSequence( inputdata_t &inputdata )
 		//  A zombie is created in the asleep state and then, the mapper fires both Wake and BeginSequence
 		//  messages to have it jump up out of the slime, e.g.  What happens before this change is that
 		//  the Wake code removed EF_NODRAW, but so the zombie is transmitted to the client, but the script
-		//  hasn't started and won't start until the next Think time (2 ticks on xbox) at which time the
+		//  hasn't started and won't start until the next Think time at which time the
 		//  actual sequence starts causing the zombie to quickly lie down.
 		// The changes here are to track what tick we "awoke" on and get rid of the lag between Wake and
 		// ScriptThink by actually calling ScriptThink directly on the same frame and checking for the
@@ -391,7 +391,6 @@ void CAI_ScriptedSequence::InputBeginSequence( inputdata_t &inputdata )
 		SetNextThink( TICK_NEVER_THINK );
 		ScriptThink();
 	}
-
 }
 
 
