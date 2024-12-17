@@ -33,7 +33,7 @@ WeaponData
         "empty"             "Weapon_IRifle.Empty"
         "double_shot"       "Weapon_AK47.Single"
         "reload"            "Weapon_AK47.Reload"
-        "single_shot"       "Weapon_AK47.Single"
+        "single_shot"	    "Weapon_AK47.Single"
 
         // NPC section
         "single_shot_npc"   "Weapon_AK47.NPC_Single"

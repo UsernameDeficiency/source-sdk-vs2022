@@ -1565,3 +1565,11 @@
 	"soundlevel"  	"SNDLVL_70dB"
 	"wave"	"weapons/tripwire/mine_activate.wav"
 }
+"Weapon_AK47.Single"
+{
+	"channel"		"CHAN_WEAPON"
+	"volume"		"0.55"
+	"soundlevel"		"SNDLVL_GUNFIRE"
+	"pitch"			"98,102"
+	"wave"			"weapons/ak47/ak47-1.wav"
+}
