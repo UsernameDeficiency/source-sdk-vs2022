@@ -245,10 +245,7 @@ static void UpdateChapterRestrictions( const char *mapname );
 static void UpdateRichPresence ( void );
 
 
-#if !defined( _XBOX ) // Don't doubly define this symbol.
 CSharedEdictChangeInfo *g_pSharedChangeInfo = NULL;
-
-#endif
 
 IChangeInfoAccessor *CBaseEdict::GetChangeAccessor()
 {
@@ -539,10 +536,8 @@ bool CServerGameDLL::DLLInit( CreateInterfaceFn appSystemFactory,
 		return false;
 	if ( (soundemitterbase = (ISoundEmitterSystemBase *)appSystemFactory(SOUNDEMITTERSYSTEM_INTERFACE_VERSION, NULL)) == NULL )
 		return false;
-#ifndef _XBOX
 	if ( (gamestatsuploader = (IUploadGameStats *)appSystemFactory( INTERFACEVERSION_UPLOADGAMESTATS, NULL )) == NULL )
 		return false;
-#endif
 	if ( !mdlcache )
 		return false;
 	if ( (serverpluginhelpers = (IServerPluginHelpers *)appSystemFactory(INTERFACEVERSION_ISERVERPLUGINHELPERS, NULL)) == NULL )
@@ -619,10 +614,8 @@ bool CServerGameDLL::DLLInit( CreateInterfaceFn appSystemFactory,
 
 	// Add game log system
 	IGameSystem::Add( GameLogSystem() );
-#ifndef _XBOX
 	// Add HLTV director 
 	IGameSystem::Add( HLTVDirectorSystem() );
-#endif
 	// Add sound emitter
 	IGameSystem::Add( SoundEmitterSystem() );
 
@@ -658,7 +651,6 @@ bool CServerGameDLL::DLLInit( CreateInterfaceFn appSystemFactory,
 	// try to get debug overlay, may be NULL if on HLDS
 	debugoverlay = (IVDebugOverlay *)appSystemFactory( VDEBUG_OVERLAY_INTERFACE_VERSION, NULL );
 
-#ifndef _XBOX
 #ifdef USE_NAV_MESH
 	// create the Navigation Mesh interface
 	TheNavMesh = NavMeshFactory();
@@ -666,7 +658,6 @@ bool CServerGameDLL::DLLInit( CreateInterfaceFn appSystemFactory,
 
 	// init the gamestatsupload connection
 	gamestatsuploader->InitConnection();
-#endif
 
 	return true;
 }
@@ -704,7 +695,6 @@ void CServerGameDLL::DLLShutdown( void )
 	RemoveBotControl();
 #endif
 
-#ifndef _XBOX
 #ifdef USE_NAV_MESH
 	// destroy the Navigation Mesh interface
 	if ( TheNavMesh )
@@ -715,7 +705,6 @@ void CServerGameDLL::DLLShutdown( void )
 #endif
 	// reset (shutdown) the gamestatsupload connection
 	gamestatsuploader->InitConnection();
-#endif
 
 	s_SteamAPIContext.Clear(); // Steam API context shutdown
 	s_SteamGameServerAPIContext.Clear();
@@ -1043,12 +1032,10 @@ void CServerGameDLL::ServerActivate( edict_t *pEdictList, int edictCount, int cl
 		think_limit.SetValue( 0 );
 	}
 
-#ifndef _XBOX
 #ifdef USE_NAV_MESH
 	// load the Navigation Mesh for this map
 	TheNavMesh->Load();
 	TheNavMesh->OnServerActivate();
-#endif
 #endif
 
 #ifdef CSTRIKE_DLL // BOTPORT: TODO: move these ifdefs out
@@ -1140,7 +1127,6 @@ void CServerGameDLL::GameFrame( bool simulating )
 	IGameSystem::FrameUpdatePreEntityThinkAllSystems();
 	GameStartFrame();
 
-#ifndef _XBOX
 #ifdef USE_NAV_MESH
 	TheNavMesh->Update();
 #endif
@@ -1150,7 +1136,6 @@ void CServerGameDLL::GameFrame( bool simulating )
 #endif
 
 	gamestatsuploader->UpdateConnection();
-#endif
 
 	UpdateQueryCache();
 	g_pServerBenchmark->UpdateBenchmark();
@@ -1310,14 +1295,12 @@ void CServerGameDLL::LevelShutdown( void )
 
 	g_nCurrentChapterIndex = -1;
 
-#ifndef _XBOX
 #ifdef USE_NAV_MESH
 	// reset the Navigation Mesh
 	if ( TheNavMesh )
 	{
 		TheNavMesh->Reset();
 	}
-#endif
 #endif
 }
 
@@ -1639,22 +1622,6 @@ static TITLECOMMENT gTitleComments[] =
 #endif
 };
 
-#ifdef _XBOX
-void CServerGameDLL::GetTitleName( const char *pMapName, char* pTitleBuff, int titleBuffSize )
-{
-	// Try to find a matching title comment for this mapname
-	for ( int i = 0; i < ARRAYSIZE(gTitleComments); i++ )
-	{
-		if ( !Q_strnicmp( pMapName, gTitleComments[i].pBSPName, strlen(gTitleComments[i].pBSPName) ) )
-		{
-			Q_strncpy( pTitleBuff, gTitleComments[i].pTitleName, titleBuffSize );
-			return;
-		}
-	}
-	Q_strncpy( pTitleBuff, pMapName, titleBuffSize );
-}
-#endif
-
 void CServerGameDLL::GetSaveComment( char *text, int maxlength, float flMinutes, float flSeconds, bool bNoTime )
 {
 	char comment[64];
@@ -1952,7 +1919,6 @@ void CServerGameDLL::LoadMessageOfTheDay()
 
 void CServerGameDLL::LoadSpecificMOTDMsg( const ConVar &convar, const char *pszStringName )
 {
-#ifndef _XBOX
 	CUtlBuffer buf;
 
 	// Generate preferred filename, which is in the cfg folder.
@@ -2005,7 +1971,6 @@ void CServerGameDLL::LoadSpecificMOTDMsg( const ConVar &convar, const char *pszS
 	}
 
 	g_pStringTableInfoPanel->AddString( CBaseEntity::IsServer(), pszStringName, buf.TellPut(), buf.Base() );
-#endif
 }
 
 // keeps track of which chapters the user has unlocked

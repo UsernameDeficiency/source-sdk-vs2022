@@ -425,13 +425,7 @@ void CPrediction::PostNetworkDataReceived( int commands_acknowledged )
 	Q_snprintf( sz_, sizeof(sz_), "postnetworkdata%d", commands_acknowledged );
 	PREDICTION_TRACKVALUECHANGESCOPE( sz_ );
 #endif
-#ifndef _XBOX
 	CPDumpPanel *dump = GetPDumpPanel();
-#endif
-	//Msg( "%i/%i ack %i commands/slot\n",
-	//	gpGlobals->framecount,
-	//	gpGlobals->tickcount,
-	//	commands_acknowledged - 1 );
 
 	m_nServerCommandsAcknowledged += commands_acknowledged;
 	m_bPreviousAckHadErrors = false;
@@ -512,7 +506,6 @@ void CPrediction::PostNetworkDataReceived( int commands_acknowledged )
 						ent->GetPredictable() ? "predicted" : "client created" );
 				}
 			}
-#ifndef _XBOX
 			if ( error_check && 
 				!entityDumped &&
 				dump &&
@@ -521,7 +514,6 @@ void CPrediction::PostNetworkDataReceived( int commands_acknowledged )
 				entityDumped = true;
 				dump->DumpEntity( ent, m_nServerCommandsAcknowledged );
 			}
-#endif
 		}
 
 		if ( showlist >= 2 )
@@ -558,7 +550,6 @@ void CPrediction::PostNetworkDataReceived( int commands_acknowledged )
 	}
 
 	// Can also look at regular entities
-#ifndef _XBOX
 	int dumpentindex = cl_predictionentitydump.GetInt();
 	if ( dump && error_check && !entityDumped && dumpentindex != -1 )
 	{
@@ -573,7 +564,6 @@ void CPrediction::PostNetworkDataReceived( int commands_acknowledged )
 			}
 		}
 	}
-#endif
 	if ( cl_predict->GetBool() != m_bOldCLPredictValue )
 	{
 		if ( !m_bOldCLPredictValue )
@@ -588,12 +578,10 @@ void CPrediction::PostNetworkDataReceived( int commands_acknowledged )
 
 	m_bOldCLPredictValue = cl_predict->GetInt();
 
-#ifndef _XBOX
 	if ( dump && error_check && !entityDumped )
 	{
 		dump->Clear();
 	}
-#endif
 #endif
 
 }
