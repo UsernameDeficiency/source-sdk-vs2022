@@ -47,16 +47,13 @@
 #include "SoundEmitterSystem/isoundemittersystembase.h"
 #include "decals.h"
 #include "obstacle_pushaway.h"
-#ifdef SIXENSE
-#include "sixense/in_sixense.h"
-#endif
 
 // NVNT haptic utils
 #include "haptics/haptic_utils.h"
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
-#if defined(GAME_DLL) && !defined(_XBOX)
+#if defined(GAME_DLL)
 	extern ConVar sv_pushaway_max_force;
 	extern ConVar sv_pushaway_force;
 	extern ConVar sv_turbophysics;
@@ -1290,7 +1287,6 @@ void CBasePlayer::PlayerUse ( void )
 		return;
 	}
 
-#if !defined(_XBOX)
 	// push objects in turbo physics mode
 	if ( (m_nButtons & IN_USE) && sv_turbophysics.GetBool() )
 	{
@@ -1327,7 +1323,6 @@ void CBasePlayer::PlayerUse ( void )
 			}
 		}
 	}
-#endif
 
 	if ( m_afButtonPressed & IN_USE )
 	{
@@ -1591,18 +1586,7 @@ void CBasePlayer::CalcPlayerView( Vector& eyeOrigin, QAngle& eyeAngles, float& f
 #endif
 
 	VectorCopy( EyePosition(), eyeOrigin );
-#ifdef SIXENSE
-	if ( g_pSixenseInput->IsEnabled() )
-	{
-		VectorCopy( EyeAngles() + GetEyeAngleOffset(), eyeAngles );
-	}
-	else
-	{
-		VectorCopy( EyeAngles(), eyeAngles );
-	}
-#else
 	VectorCopy( EyeAngles(), eyeAngles );
-#endif
 
 #if defined( CLIENT_DLL )
 	if ( !prediction->InPrediction() )
@@ -1885,7 +1869,6 @@ int CBasePlayer::GetDefaultFOV( void ) const
 
 void CBasePlayer::AvoidPhysicsProps( CUserCmd *pCmd )
 {
-#ifndef _XBOX
 	// Don't avoid if noclipping or in movetype none
 	switch ( GetMoveType() )
 	{
@@ -1901,7 +1884,6 @@ void CBasePlayer::AvoidPhysicsProps( CUserCmd *pCmd )
 		return;
 
 	AvoidPushawayProps( this, pCmd );
-#endif
 }
 
 //-----------------------------------------------------------------------------

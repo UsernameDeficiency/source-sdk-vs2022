@@ -327,9 +327,6 @@ FORCEINLINE_PIXEL void CPixelWriter::WritePixelNoAdvanceF( float r, float g, flo
 {
 	Assert( IsUsingFloatFormat() );
 
-	// X360TBD: Not ported
-	Assert( IsPC() );
-
 	if (PIXELWRITER_USING_16BIT_FLOAT_FORMAT & m_nFlags)
 	{
 		float16 fp16[4];
@@ -443,8 +440,6 @@ FORCEINLINE_PIXEL void CPixelWriter::WritePixelNoAdvance( int r, int g, int b, i
 	}
 	else	// RGBA32323232 or RGBA16161616 -- PC only.
 	{
-		AssertMsg(!IsX360(), "Unsupported lightmap format used in WritePixelNoAdvance(). This is a severe performance fault.\n");
-
 		int64 val = ( ( int64 )(r & m_RMask) ) << m_RShift;
 		val |=  ( ( int64 )(g & m_GMask) ) << m_GShift;
 		val |= (m_BShift > 0) ? ((( int64 )( b & m_BMask)) << m_BShift) : (((int64)( b & m_BMask)) >> -m_BShift);

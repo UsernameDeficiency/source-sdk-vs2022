@@ -349,7 +349,6 @@ enum
 	LUMP_LEAF_AMBIENT_LIGHTING_HDR	= 55,	// NOTE: this data overrides part of the data stored in LUMP_LEAFS.
 	LUMP_LEAF_AMBIENT_LIGHTING		= 56,	// NOTE: this data overrides part of the data stored in LUMP_LEAFS.
 
-	LUMP_XZIPPAKFILE				= 57,   // deprecated. xbox 1: xzip version of pak file
 	LUMP_FACES_HDR					= 58,	// HDR maps may have different face data.
 	LUMP_MAP_FLAGS                  = 59,   // extended level-wide flags. not present in all levels
 	LUMP_OVERLAY_FADES				= 60,	// Fade distances for overlays
@@ -789,9 +788,6 @@ struct dfaceid_t
 #define LEAF_FLAGS_RADIAL		0x02		// This leaf culled away some portals due to radial vis
 #define LEAF_FLAGS_SKY2D		0x04		// This leaf has 2D sky in its PVS
 
-#if defined( _X360 )
-#pragma bitfield_order( push, lsb_to_msb )
-#endif
 #pragma warning( disable:4201 )	// C4201: nonstandard extension used: nameless struct/union
 struct dleaf_version_0_t
 {
@@ -847,9 +843,6 @@ struct dleaf_t
 //	CompressedLightCube m_AmbientLighting;
 };
 #pragma warning( default:4201 )	// C4201: nonstandard extension used: nameless struct/union
-#if defined( _X360 )
-#pragma bitfield_order( pop )
-#endif
 
 // each leaf contains N samples of the ambient lighting
 // each sample contains a cube of ambient light projected on to each axis

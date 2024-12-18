@@ -1405,9 +1405,6 @@ extern float LinearToGamma( float linear );
 
 extern float SrgbGammaToLinear( float flSrgbGammaValue );
 extern float SrgbLinearToGamma( float flLinearValue );
-extern float X360GammaToLinear( float fl360GammaValue );
-extern float X360LinearToGamma( float flLinearValue );
-extern float SrgbGammaTo360Gamma( float flSrgbGammaValue );
 
 // linear (0..4) to screen corrected vertex space (0..1?)
 FORCEINLINE float LinearToVertexLight( float f )
@@ -1905,7 +1902,6 @@ FORCEINLINE float * UnpackNormal_SHORT2( const unsigned int *pPackedNormal, floa
 {
 	// Unpacks from Jason's 2-short format (fills in a 4th binormal-sign (+1/-1) value, if this is a tangent vector)
 
-	// FIXME: short math is slow on 360 - use ints here instead (bit-twiddle to deal w/ the sign bits)
 	short iX = (*pPackedNormal & 0x0000FFFF);
 	short iY = (*pPackedNormal & 0xFFFF0000) >> 16;
 

@@ -4530,9 +4530,7 @@ public:
 private:
 	IPhysicsMotionController	*m_pController;
 
-#ifndef _XBOX
 	EntityParticleTrailInfo_t	m_ParticleTrail;
-#endif //!_XBOX
 
 	float						m_gravityScale;
 	float						m_addAirDensity;
@@ -4554,9 +4552,7 @@ private:
 //------------------------------------------------------------------------------
 BEGIN_DATADESC( CTriggerVPhysicsMotion )
 	DEFINE_PHYSPTR( m_pController ),
-#ifndef _XBOX
 	DEFINE_EMBEDDED( m_ParticleTrail ),
-#endif //!_XBOX
 	DEFINE_INPUT( m_gravityScale, FIELD_FLOAT, "SetGravityScale" ),
 	DEFINE_INPUT( m_addAirDensity, FIELD_FLOAT, "SetAdditionalAirDensity" ),
 	DEFINE_INPUT( m_linearLimit, FIELD_FLOAT, "SetVelocityLimit" ),
@@ -4591,12 +4587,10 @@ void CTriggerVPhysicsMotion::Spawn()
 //------------------------------------------------------------------------------
 void CTriggerVPhysicsMotion::Precache()
 {
-#ifndef _XBOX
 	if ( m_ParticleTrail.m_strMaterialName != NULL_STRING )
 	{
 		PrecacheMaterial( STRING(m_ParticleTrail.m_strMaterialName) ); 
 	}
-#endif //!_XBOX
 }
 
 //------------------------------------------------------------------------------
@@ -4687,13 +4681,10 @@ void CTriggerVPhysicsMotion::StartTouch( CBaseEntity *pOther )
 		m_pController->AttachObject( event.pObject, true );
 	}
 
-	// Don't show these particles on the XBox
-#ifndef _XBOX
 	if ( m_ParticleTrail.m_strMaterialName != NULL_STRING )
 	{
 		CEntityParticleTrail::Create( pOther, m_ParticleTrail, this ); 
 	}
-#endif
 
 	if ( pOther->GetBaseAnimating() && pOther->GetBaseAnimating()->IsRagdoll() )
 	{
@@ -4724,12 +4715,10 @@ void CTriggerVPhysicsMotion::EndTouch( CBaseEntity *pOther )
 		m_pController->DetachObject( event.pObject );
 	}
 
-#ifndef _XBOX
 	if ( m_ParticleTrail.m_strMaterialName != NULL_STRING )
 	{
 		CEntityParticleTrail::Destroy( pOther, m_ParticleTrail ); 
 	}
-#endif //!_XBOX
 
 	if ( pOther->GetBaseAnimating() && pOther->GetBaseAnimating()->IsRagdoll() )
 	{

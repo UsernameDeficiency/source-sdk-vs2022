@@ -990,8 +990,9 @@ bool CAI_NetworkManager::IsAIFileCurrent ( const char *szMapName )
 		}
 	}
 	
-	Q_snprintf( szBspFilename, sizeof( szBspFilename ), "maps/%s%s.bsp" ,szMapName, GetPlatformExt() );
-	Q_snprintf( szGraphFilename, sizeof( szGraphFilename ), "maps/graphs/%s%s.ain", szMapName, GetPlatformExt() );
+	// TODO: Purpose of below snprintf calls? Empty strings were previously given by GetPlatformExt
+	Q_snprintf( szBspFilename, sizeof( szBspFilename ), "maps/%s%s.bsp" ,szMapName, "" );
+	Q_snprintf( szGraphFilename, sizeof( szGraphFilename ), "maps/graphs/%s%s.ain", szMapName, "" );
 	
 	int iCompare;
 	if ( engine->CompareFileTime( szBspFilename, szGraphFilename, &iCompare ) )

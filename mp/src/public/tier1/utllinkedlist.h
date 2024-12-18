@@ -630,7 +630,6 @@ void  CUtlLinkedList<T,S,ML,I,M>::Purge()
 	m_FirstFree = InvalidIndex();
 	m_NumAlloced = 0;
 
-	//Routing "m_LastAlloc = m_Memory.InvalidIterator();" through a local const to sidestep an internal compiler error on 360 builds
 	const typename M::Iterator_t scInvalidIterator = m_Memory.InvalidIterator();
 	m_LastAlloc = scInvalidIterator;
 	ResetDbgInfo();

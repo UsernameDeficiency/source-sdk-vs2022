@@ -1047,7 +1047,7 @@ void Frame::OnThink()
 		if (m_bFadingOut)
 		{
 			// we're fading out, see if we're done so we can fully hide the window
-			if (GetAlpha() < ( IsX360() ? 64 : 1 ))
+			if (GetAlpha() < 1 )
 			{
 				FinishClose();
 			}

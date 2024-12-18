@@ -212,7 +212,6 @@ KeyValues* ReadEncryptedKVFile( IFileSystem *fs, const char *szFilenameWithoutEx
 
 	if ( bForceReadEncryptedFile || !pKV->LoadFromFile( fs, szFullName, pSearchPath ) ) // try to load the normal .txt file first
 	{
-#ifndef _XBOX
 		if ( pICEKey )
 		{
 			Q_snprintf(szFullName,sizeof(szFullName), "%s.ctx", szFilenameWithoutExtension); // fall back to the .ctx file
@@ -251,10 +250,6 @@ KeyValues* ReadEncryptedKVFile( IFileSystem *fs, const char *szFilenameWithoutEx
 			pKV->deleteThis();
 			return NULL;
 		}
-#else
-		pKV->deleteThis();
-		return NULL;
-#endif
 	}
 
 	return pKV;

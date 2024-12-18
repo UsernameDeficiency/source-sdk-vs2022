@@ -186,7 +186,6 @@ struct DirWatcherOverlapped : public OVERLAPPED
 };
 #endif
 
-#if !defined(_PS3) && !defined(_X360)
 // a buffer full of file names
 static const int k_cubDirWatchBufferSize = 8 * 1024;
 
@@ -478,7 +477,6 @@ bool CDirWatcher::GetChangedFile( CUtlString *psFile )
 }
 
 
-
 #ifdef DBGFLAG_VALIDATE
 void CDirWatcher::Validate( CValidator &validator, const char *pchName )
 {
@@ -493,5 +491,3 @@ void CDirWatcher::Validate( CValidator &validator, const char *pchName )
 	}
 }
 #endif
-
-#endif // _PS3 || _X360

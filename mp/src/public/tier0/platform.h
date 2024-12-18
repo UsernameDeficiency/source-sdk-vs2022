@@ -72,20 +72,13 @@
 #define IsDebug() false
 #endif
 
-// Deprecating, infavor of IsX360() which will revert to IsXbox()
-// after confidence of xbox 1 code flush
-#define IsXbox()	false
-
 #ifdef _WIN32
 	#define IsLinux() false
 	#define IsOSX() false
 	#define IsPosix() false
-	#define PLATFORM_WINDOWS 1 // Windows PC or Xbox 360
+	#define PLATFORM_WINDOWS 1
 	#define IsWindows() true
 	#define IsPC() true
-	#define IsConsole() false
-	#define IsX360() false
-	#define IsPS3() false
 	#define IS_WINDOWS_PC
 	#define PLATFORM_WINDOWS_PC 1 // Windows PC
 	#ifdef _WIN64
@@ -106,9 +99,6 @@
 #elif defined(POSIX)
 	#define IsPC() true
 	#define IsWindows() false
-	#define IsConsole() false
-	#define IsX360() false
-	#define IsPS3() false
 	#if defined( LINUX )
 		#define IsLinux() true
 	#else
@@ -145,13 +135,6 @@ typedef signed char int8;
 	#else
 		typedef __int32 intp;
 		typedef unsigned __int32 uintp;
-	#endif
-
-	#if defined( _X360 )
-		#ifdef __m128
-			#undef __m128
-		#endif
-		#define __m128				__vector4
 	#endif
 
 	// Use this to specify that a function is an override of a virtual function.
@@ -196,16 +179,7 @@ typedef signed char int8;
 //-----------------------------------------------------------------------------
 // Set up platform type defines.
 //-----------------------------------------------------------------------------
-#if defined( PLATFORM_X360 )
-	#if !defined( _GAMECONSOLE )
-		#define _GAMECONSOLE
-	#endif
-	#define IsPC()			false
-	#define IsGameConsole()	true
-#else
-	#define IsPC()			true
-	#define IsGameConsole()	false
-#endif
+#define IsPC()			true
 
 #ifdef PLATFORM_64BITS
 	#define IsPlatform64Bits()	true
@@ -1161,26 +1135,6 @@ PLATFORM_INTERFACE bool Is64BitOS();
 #define WM_XMP_PLAYBACKBEHAVIORCHANGED		(WM_USER + 122)
 #define WM_XMP_PLAYBACKCONTROLLERCHANGED	(WM_USER + 123)
 
-inline const char *GetPlatformExt( void )
-{
-	return IsX360() ? ".360" : "";
-}
-
-// flat view, 6 hw threads
-#define XBOX_PROCESSOR_0			( 1<<0 )
-#define XBOX_PROCESSOR_1			( 1<<1 )
-#define XBOX_PROCESSOR_2			( 1<<2 )
-#define XBOX_PROCESSOR_3			( 1<<3 )
-#define XBOX_PROCESSOR_4			( 1<<4 )
-#define XBOX_PROCESSOR_5			( 1<<5 )
-
-// core view, 3 cores with 2 hw threads each
-#define XBOX_CORE_0_HWTHREAD_0		XBOX_PROCESSOR_0
-#define XBOX_CORE_0_HWTHREAD_1		XBOX_PROCESSOR_1
-#define XBOX_CORE_1_HWTHREAD_0		XBOX_PROCESSOR_2
-#define XBOX_CORE_1_HWTHREAD_1		XBOX_PROCESSOR_3
-#define XBOX_CORE_2_HWTHREAD_0		XBOX_PROCESSOR_4
-#define XBOX_CORE_2_HWTHREAD_1		XBOX_PROCESSOR_5
 
 //-----------------------------------------------------------------------------
 // Include additional dependant header components.

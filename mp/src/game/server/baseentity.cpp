@@ -412,9 +412,7 @@ CBaseEntity::CBaseEntity( bool bServerOnly )
 	}
 	NetworkProp()->MarkPVSInformationDirty();
 
-#ifndef _XBOX
 	AddEFlags( EFL_USE_PARTITION_WHEN_NOT_SOLID );
-#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -2773,7 +2771,7 @@ bool CBaseEntity::FVisible( CBaseEntity *pEntity, int traceMask, CBaseEntity **p
 	Vector vecTargetOrigin = pEntity->EyePosition();
 
 	trace_t tr;
-	if ( !IsXbox() && ai_LOS_mode.GetBool() )
+	if ( ai_LOS_mode.GetBool() )
 	{
 		UTIL_TraceLine(vecLookerOrigin, vecTargetOrigin, traceMask, this, COLLISION_GROUP_NONE, &tr);
 	}
@@ -4660,34 +4658,6 @@ static CWatchForModelAccess g_WatchForModels;
 #define CL_EVENT_FOOTSTEP_RIGHT		6005
 #define CL_EVENT_MFOOTSTEP_LEFT		6006
 #define CL_EVENT_MFOOTSTEP_RIGHT	6007
-
-//-----------------------------------------------------------------------------
-// Precache model sound. Requires a local symbol table to prevent
-// a very expensive call to PrecacheScriptSound().
-//-----------------------------------------------------------------------------
-void CBaseEntity::PrecacheSoundHelper( const char *pName )
-{
-	// TODO: What is happening here? "360 only" comment in non-360 block
-	if ( !IsX360() )
-	{
-		// 360 only
-		Assert( 0 );
-		return;
-	}
-
-	if ( !pName || !pName[0] )
-	{
-		return;
-	}
-
-	if ( UTL_INVAL_SYMBOL == g_ModelSoundsSymbolHelper.Find( pName ) )
-	{
-		g_ModelSoundsSymbolHelper.AddString( pName );
-
-		// very expensive, only call when required
-		PrecacheScriptSound( pName );
-	}
-}
 
 //-----------------------------------------------------------------------------
 // Precache model components
@@ -6879,26 +6849,12 @@ void CBaseEntity::RemoveRecipientsIfNotCloseCaptioning( CRecipientFilter& filter
 		CBasePlayer *player = static_cast< CBasePlayer * >( CBaseEntity::Instance( playerIndex ) );
 		if ( !player )
 			continue;
-#if !defined( _XBOX )
 		const char *cvarvalue = engine->GetClientConVarValue( playerIndex, "closecaption" );
 		Assert( cvarvalue );
 		if ( !cvarvalue[ 0 ] )
 			continue;
 
 		int value = atoi( cvarvalue );
-#else
-		static ConVar *s_pCloseCaption = NULL;
-		if ( !s_pCloseCaption )
-		{
-			s_pCloseCaption = cvar->FindVar( "closecaption" );
-			if ( !s_pCloseCaption )
-			{
-				Error( "XBOX couldn't find closecaption convar!!!" );
-			}
-		}
-
-		int value = s_pCloseCaption->GetInt();
-#endif
 		// No close captions?
 		if ( value == 0 )
 		{
@@ -7083,13 +7039,10 @@ bool CBaseEntity::SUB_AllowedToFade( void )
 			return false;
 	}
 
-	// on Xbox, allow these to fade out
-#ifndef _XBOX
 	CBasePlayer *pPlayer = ( AI_IsSinglePlayer() ) ? UTIL_GetLocalPlayer() : NULL;
 
 	if ( pPlayer && pPlayer->FInViewCone( this ) )
 		return false;
-#endif
 
 	return true;
 }

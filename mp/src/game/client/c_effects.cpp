@@ -44,7 +44,6 @@ float GUST_LIFETIME_MAX = 3;
 
 float MIN_SCREENSPACE_RAIN_WIDTH = 1;
 
-#ifndef _XBOX
 ConVar r_RainHack( "r_RainHack", "0", FCVAR_CHEAT );
 ConVar r_RainRadius( "r_RainRadius", "1500", FCVAR_CHEAT );
 ConVar r_RainSideVel( "r_RainSideVel", "130", FCVAR_CHEAT, "How much sideways velocity rain gets." );
@@ -53,8 +52,7 @@ ConVar r_RainSimulate( "r_RainSimulate", "1", FCVAR_CHEAT, "Enable/disable rain 
 ConVar r_DrawRain( "r_DrawRain", "1", FCVAR_CHEAT, "Enable/disable rain rendering." );
 ConVar r_RainProfile( "r_RainProfile", "0", FCVAR_CHEAT, "Enable/disable rain profiling." );
 
-
-//Precahce the effects
+//Precache the effects
 CLIENTEFFECT_REGISTER_BEGIN( PrecachePrecipitation )
 CLIENTEFFECT_MATERIAL( "particle/rain" )
 CLIENTEFFECT_MATERIAL( "particle/snow" )
@@ -1161,13 +1159,6 @@ public:
 };
 CPrecipHack g_PrecipHack( "CPrecipHack" );
 
-#else
-
-void DrawPrecipitation()
-{
-}
-
-#endif	// _XBOX
 
 //-----------------------------------------------------------------------------
 // EnvWind - global wind info
@@ -1890,9 +1881,7 @@ void CSnowFallManager::FindSnowVolumes( Vector &vecCenter, float flRadius, Vecto
 //-----------------------------------------------------------------------------
 void CSnowFallManager::CreateSnowFall( void )
 {
-#if 1
 	VPROF_BUDGET( "SnowFall", VPROF_BUDGETGROUP_PARTICLE_RENDERING );
-#endif
 
 	// Check to see if we have a local player before starting the snow around a local player.
 	C_BasePlayer *pPlayer = C_BasePlayer::GetLocalPlayer();

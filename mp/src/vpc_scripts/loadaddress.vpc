@@ -29,18 +29,6 @@
 $Macro LOADADDRESS_DEVELOPMENT		" "		[$WINDOWS]
 $Macro LOADADDRESS_RETAIL			" "		[$WINDOWS]
 
-$LoadAddressMacro LOADADDRESS_DEVELOPMENT
-{
-	launcher_main			0x82000000	[$X360]
-	simdtest				0x82000000	[$X360]
-}
-
-$LoadAddressMacro LOADADDRESS_RETAIL
-{
-	launcher_main			0x82000000	[$X360]
-	simdtest				0x82000000	[$X360]
-}
-
 // Development versions require more memory to accomodate debug builds, release builds have to match debug for hybrid builds
 $LoadAddressMacroAuto LOADADDRESS_DEVELOPMENT	0x82200000 [$X360]
 {

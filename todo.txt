@@ -1,21 +1,21 @@
-Ta bort:
-	IsXbox
-	X360
-	IsPC
-	Playstation?
-	NO_STEAM?
-	CLIENT_DLL för Xbox?
-	bPerformSoftwareAA (endast till 360)
-	bFirstFrame (endast falsk på 360)
-	#if 1
-	SIXENSE
-	PS3
-	_GAMECONSOLE, PLATFORM_X360, IsGameConsole
-	EPISODIC?
-Funktioner
-	X360GammaToLinear
-	X360LinearToGamma
+IsPC
+VECTOR_NO_SLOW_OPERATIONS
+
+Xbox
+	CHudTexture::Precache (360 only)
+	IN_XBOX_CODELINE, XBOX_CODELINE_ONLY, xbox_codeline_defines.h
+	#define XBOX_*
+	$X360
 
 Byt t.ex. isPC till compile time?
 
 Kör Code Analysis och t.ex. cppcheck
+
+Move custom values (movement, weapons, suit power...) into some centralized settings file
+
+utlbuffer.cpp (618) : Assertion Failed: maxLenInChars != 0
+
+Cvars:
+	auto_bhop
+	infinite_ammo
+	impulse 101
