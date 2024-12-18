@@ -1,20 +1,21 @@
-Ta bort:
-	IsPC
-	IsConsole
-	NO_STEAM?
-	EPISODIC?
-	USE_STDC_FOR_SIMD
-	VECTOR_NO_SLOW_OPERATIONS
+IsPC
+VECTOR_NO_SLOW_OPERATIONS
 
 Xbox
-	CLIENT_DLL för Xbox?
-	bFirstFrame (endast falsk på 360)
-	bPerformSoftwareAA (endast till 360)
-	GetPlatformExt
 	CHudTexture::Precache (360 only)
+	IN_XBOX_CODELINE, XBOX_CODELINE_ONLY, xbox_codeline_defines.h
+	#define XBOX_*
+	$X360
 
 Byt t.ex. isPC till compile time?
 
 Kör Code Analysis och t.ex. cppcheck
 
-Move custom values (movement, weapons, suit power...) into some centralized TTMOD settings file
+Move custom values (movement, weapons, suit power...) into some centralized settings file
+
+utlbuffer.cpp (618) : Assertion Failed: maxLenInChars != 0
+
+Cvars:
+	auto_bhop
+	infinite_ammo
+	impulse 101

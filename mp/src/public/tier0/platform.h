@@ -1136,22 +1136,6 @@ PLATFORM_INTERFACE bool Is64BitOS();
 #define WM_XMP_PLAYBACKCONTROLLERCHANGED	(WM_USER + 123)
 
 
-// flat view, 6 hw threads
-#define XBOX_PROCESSOR_0			( 1<<0 )
-#define XBOX_PROCESSOR_1			( 1<<1 )
-#define XBOX_PROCESSOR_2			( 1<<2 )
-#define XBOX_PROCESSOR_3			( 1<<3 )
-#define XBOX_PROCESSOR_4			( 1<<4 )
-#define XBOX_PROCESSOR_5			( 1<<5 )
-
-// core view, 3 cores with 2 hw threads each
-#define XBOX_CORE_0_HWTHREAD_0		XBOX_PROCESSOR_0
-#define XBOX_CORE_0_HWTHREAD_1		XBOX_PROCESSOR_1
-#define XBOX_CORE_1_HWTHREAD_0		XBOX_PROCESSOR_2
-#define XBOX_CORE_1_HWTHREAD_1		XBOX_PROCESSOR_3
-#define XBOX_CORE_2_HWTHREAD_0		XBOX_PROCESSOR_4
-#define XBOX_CORE_2_HWTHREAD_1		XBOX_PROCESSOR_5
-
 //-----------------------------------------------------------------------------
 // Include additional dependant header components.
 //-----------------------------------------------------------------------------

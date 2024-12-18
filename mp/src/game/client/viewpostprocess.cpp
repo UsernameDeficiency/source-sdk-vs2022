@@ -1193,8 +1193,8 @@ private:
 
 public:
 	static IMaterial * SetupEnginePostMaterial( const Vector4D & fullViewportBloomUVs, const Vector4D & fullViewportFBUVs, const Vector2D & destTexSize,
-												bool bPerformSoftwareAA, bool bPerformBloom, bool bPerformColCorrect, float flAAStrength );
-	static void SetupEnginePostMaterialAA( bool bPerformSoftwareAA, float flAAStrength );
+												bool bPerformBloom, bool bPerformColCorrect, float flAAStrength );
+	static void SetupEnginePostMaterialAA( float flAAStrength );
 	static void SetupEnginePostMaterialTextureTransform( const Vector4D & fullViewportBloomUVs, const Vector4D & fullViewportFBUVs, Vector2D destTexSize );
 
 private:
@@ -1265,30 +1265,10 @@ IMaterial *CEnginePostMaterialProxy::GetMaterial()
 	return m_pMaterialParam_AAValues->GetOwningMaterial();
 }
 
-void CEnginePostMaterialProxy::SetupEnginePostMaterialAA( bool bPerformSoftwareAA, float flAAStrength )
+void CEnginePostMaterialProxy::SetupEnginePostMaterialAA( float flAAStrength )
 {
-	if ( bPerformSoftwareAA )
-	{
-		// Pass ConVars to the material by proxy
-		//  - the strength of the AA effect (from 0 to 1)
-		//  - how much to allow 1-pixel lines to be blurred (from 0 to 1)
-		//  - pick one of the two quality modes (5-tap or 9-tap filter)
-		//  - optionally enable one of several debug modes (via dynamic combos)
-		// NOTE: this order matches pixel shader constants in Engine_Post_ps2x.fxc
-		s_vBloomAAValues[0]  = flAAStrength;
-		s_vBloomAAValues[1]  = 1.0f - mat_software_aa_blur_one_pixel_lines.GetFloat();
-		s_vBloomAAValues[2]  = mat_software_aa_quality.GetInt();
-		s_vBloomAAValues[3]  = mat_software_aa_debug.GetInt();
-		s_vBloomAAValues2[0] = mat_software_aa_edge_threshold.GetFloat();
-		s_vBloomAAValues2[1] = mat_software_aa_tap_offset.GetFloat();
-		//s_vBloomAAValues2[2] = unused;
-		//s_vBloomAAValues2[3] = unused;
-	}
-	else
-	{
-		// Zero-strength AA is interpreted as "AA disabled"
-		s_vBloomAAValues[0] = 0.0f;
-	}
+	// Zero-strength AA is interpreted as "AA disabled"
+	s_vBloomAAValues[0] = 0.0f;
 }
 
 void CEnginePostMaterialProxy::SetupEnginePostMaterialTextureTransform( const Vector4D & fullViewportBloomUVs, const Vector4D & fullViewportFBUVs, Vector2D fbSize )
@@ -1327,16 +1307,16 @@ void CEnginePostMaterialProxy::SetupEnginePostMaterialTextureTransform( const Ve
 }
 
 IMaterial * CEnginePostMaterialProxy::SetupEnginePostMaterial(	const Vector4D & fullViewportBloomUVs, const Vector4D & fullViewportFBUVs, const Vector2D & destTexSize,
-																bool bPerformSoftwareAA, bool bPerformBloom, bool bPerformColCorrect, float flAAStrength )
+																bool bPerformBloom, bool bPerformColCorrect, float flAAStrength )
 {
 	// Shouldn't get here if none of the effects are enabled
-	Assert( bPerformSoftwareAA || bPerformBloom || bPerformColCorrect );
+	Assert( bPerformBloom || bPerformColCorrect );
 
 	s_PostBloomEnable		= bPerformBloom ? 1 : 0;
 
-	SetupEnginePostMaterialAA( bPerformSoftwareAA, flAAStrength );
+	SetupEnginePostMaterialAA( flAAStrength );
 
-	if ( bPerformSoftwareAA || bPerformColCorrect )
+	if ( bPerformColCorrect )
 	{
 		SetupEnginePostMaterialTextureTransform( fullViewportBloomUVs, fullViewportFBUVs, destTexSize );
 		return materials->FindMaterial( "dev/engine_post", TEXTURE_GROUP_OTHER, true);
@@ -2199,8 +2179,7 @@ void DoEnginePostProcessing( int x, int y, int w, int h, bool bFlashlightIsOn, b
 			// We do a second AA blur pass over the TF intro menus. use mat_software_aa_strength_vgui there instead
 			flAAStrength = mat_software_aa_strength.GetFloat();
 
-			// bloom, software-AA and colour-correction (applied in 1 pass, after generation of the bloom texture)
-			bool  bPerformSoftwareAA	= false;
+			// bloom and colour-correction (applied in 1 pass, after generation of the bloom texture)
 			bool  bPerformBloom			= !bPostVGui && ( flBloomScale > 0.0f ) && ( engine->GetDXSupportLevel() >= 90 );
 			bool  bPerformColCorrect	= !bPostVGui && 
 										  ( g_pMaterialSystemHardwareConfig->GetDXSupportLevel() >= 90) &&
@@ -2209,7 +2188,7 @@ void DoEnginePostProcessing( int x, int y, int w, int h, bool bFlashlightIsOn, b
 										  mat_colorcorrection.GetInt();
 			bool  bSplitScreenHDR		= mat_show_ab_hdr.GetInt();
 			pRenderContext->EnableColorCorrection( bPerformColCorrect );
-			if ( bPerformBloom || bPerformSoftwareAA || bPerformColCorrect )
+			if ( bPerformBloom || bPerformColCorrect )
 			{
 				tmZone( TELEMETRY_LEVEL0, TMZF_NONE, "ColorCorrection" );
 
@@ -2279,7 +2258,7 @@ void DoEnginePostProcessing( int x, int y, int w, int h, bool bFlashlightIsOn, b
 					{
 						// Perform post-processing in one combined pass
 
-						IMaterial *post_mat = CEnginePostMaterialProxy::SetupEnginePostMaterial( fullViewportPostSrcCorners, fullViewportPostDestCorners, destTexSize, bPerformSoftwareAA, bPerformBloom, bPerformColCorrect, flAAStrength );
+						IMaterial *post_mat = CEnginePostMaterialProxy::SetupEnginePostMaterial( fullViewportPostSrcCorners, fullViewportPostDestCorners, destTexSize, bPerformBloom, bPerformColCorrect, flAAStrength );
 
 						if (bSplitScreenHDR)
 						{
@@ -2304,35 +2283,10 @@ void DoEnginePostProcessing( int x, int y, int w, int h, bool bFlashlightIsOn, b
 					}
 					else
 					{
-						// Perform post-processing in three separate passes
-						if ( bPerformSoftwareAA )
-						{
-							IMaterial *aa_mat = CEnginePostMaterialProxy::SetupEnginePostMaterial( fullViewportPostSrcCorners, fullViewportPostDestCorners, destTexSize, bPerformSoftwareAA, false, false, flAAStrength );
-
-							if (bSplitScreenHDR)
-							{
-								pRenderContext->SetScissorRect( partialViewportPostDestRect.width / 2, 0, partialViewportPostDestRect.width, partialViewportPostDestRect.height, true );
-							}
-
-							pRenderContext->DrawScreenSpaceRectangle(aa_mat,
-                                                                     // TODO: check if offsets should be 0,0 here, as with the combined-pass case
-																	 partialViewportPostDestRect.x,				partialViewportPostDestRect.y, 
-																	 partialViewportPostDestRect.width,			partialViewportPostDestRect.height, 
-																	 partialViewportPostSrcCorners.x,			partialViewportPostSrcCorners.y, 
-																	 partialViewportPostSrcCorners.z,			partialViewportPostSrcCorners.w, 
-																	 dest_rt1->GetActualWidth(),dest_rt1->GetActualHeight(),
-																	 GetClientWorldEntity()->GetClientRenderable());
-
-							if (bSplitScreenHDR)
-							{
-								pRenderContext->SetScissorRect( -1, -1, -1, -1, false );
-							}
-							bFBUpdated = true;
-						}
-
+						// Perform post-processing in separate passes
 						if ( bPerformBloom )
 						{
-							IMaterial *bloom_mat = CEnginePostMaterialProxy::SetupEnginePostMaterial( fullViewportPostSrcCorners, fullViewportPostDestCorners, destTexSize, false, bPerformBloom, false, flAAStrength );
+							IMaterial *bloom_mat = CEnginePostMaterialProxy::SetupEnginePostMaterial( fullViewportPostSrcCorners, fullViewportPostDestCorners, destTexSize, bPerformBloom, false, flAAStrength );
 
 							if (bSplitScreenHDR)
 							{
@@ -2363,7 +2317,7 @@ void DoEnginePostProcessing( int x, int y, int w, int h, bool bFlashlightIsOn, b
 								UpdateScreenEffectTexture( 0, x, y, w, h, false, &actualRect );
 							}
 
-							IMaterial *colcorrect_mat = CEnginePostMaterialProxy::SetupEnginePostMaterial( fullViewportPostSrcCorners, fullViewportPostDestCorners, destTexSize, false, false, bPerformColCorrect, flAAStrength );
+							IMaterial *colcorrect_mat = CEnginePostMaterialProxy::SetupEnginePostMaterial( fullViewportPostSrcCorners, fullViewportPostDestCorners, destTexSize, false, bPerformColCorrect, flAAStrength );
 
 							if (bSplitScreenHDR)
 							{

@@ -26,7 +26,6 @@ $Project "tier1"
 	$Folder	"Source Files"
 	{
 		$File	"bitbuf.cpp"
-		$File	"newbitbuf.cpp"
 		$File	"byteswap.cpp"
 		$File	"characterset.cpp"
 		$File	"checksum_crc.cpp"
@@ -53,7 +52,7 @@ $Project "tier1"
 			{
 				$Compiler
 				{
-					$EnableC++Exceptions	"Yes (/EHsc)" [!$X360]
+					$EnableC++Exceptions	"Yes (/EHsc)"
 				}
 			}
 		}

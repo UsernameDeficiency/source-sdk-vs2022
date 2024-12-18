@@ -94,7 +94,6 @@ class ConCommandBase
 	friend class ConVar;
 	friend class ConCommand;
 	friend void ConVar_Register( int nCVarFlag, IConCommandBaseAccessor *pAccessor );
-	friend void ConVar_PublishToVXConsole();
 
 	// FIXME: Remove when ConVar changes are done
 	friend class CDefaultCvar;

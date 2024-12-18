@@ -1189,23 +1189,6 @@ unsigned xZipComputeXWVPreload( const char* filename )
 
 unsigned xZipComputeXTFPreload( const char* filename )
 {
-#if 0 // X360TBD: Not using XTF anymore
-	FILE* hFile = fopen( filename, "rb" );
-	if ( !hFile )
-	{
-		printf("Failed to open file: %s\n", filename);
-		return 0;
-	}
-
-	XTFFileHeader_t header;
-	memset( &header,0, sizeof( header ) );
-	fread( &header,1,sizeof(header),hFile);
-
-	fclose(hFile);
-
-	if ( !strncmp( header.fileTypeString, "XTF", 4 ) )
-		return header.preloadDataSize;
-#endif
 	return 0;
 }
 
@@ -1274,11 +1257,9 @@ unsigned xZipComputeXCSPreload( const char* filename )
 
 unsigned xZipComputeCustomPreloads( const char* filename )
 {
-	// X360TBD: These all need to act on a utlbuffer
+	// TODO: No effect
 	Assert( 0 );
 	return 0;
-
-//	strlwr(filename);
 
 	unsigned offset = xZipComputeXWVPreload( filename );
 	if ( offset )

@@ -179,8 +179,6 @@ private:
 vgui::DHANDLE< CDragDropHelperPanel >	s_DragDropHelper;
 #endif
 
-#if defined( VGUI_USEKEYBINDINGMAPS )
-
 BoundKey_t::BoundKey_t():
 	isbuiltin( true ),
 	bindingname( 0 ),
@@ -627,8 +625,6 @@ void Panel::ReloadKeyBindings( KeyBindingContextHandle_t handle )
 	}
 	kv->deleteThis();
 }
-#endif // VGUI_USEKEYBINDINGMAPS
-
 DECLARE_BUILD_FACTORY( Panel );
 
 //-----------------------------------------------------------------------------
@@ -691,9 +687,7 @@ void Panel::Init( int x, int y, int wide, int tall )
 	SetSize(wide, tall);
 	_flags.SetFlag( NEEDS_LAYOUT | NEEDS_SCHEME_UPDATE | NEEDS_DEFAULT_SETTINGS_APPLIED );
 	_flags.SetFlag( AUTODELETE_ENABLED | PAINT_BORDER_ENABLED | PAINT_BACKGROUND_ENABLED | PAINT_ENABLED );
-#if defined( VGUI_USEKEYBINDINGMAPS )
 	_flags.SetFlag( ALLOW_CHAIN_KEYBINDING_TO_PARENT );
-#endif
 	m_nPinDeltaX = m_nPinDeltaY = 0;
 	m_nResizeDeltaX = m_nResizeDeltaY = 0;
 	_autoResizeDirection = AUTORESIZE_NO;
@@ -734,9 +728,7 @@ void Panel::Init( int x, int y, int wide, int tall )
 
 	m_lLastDoublePressTime = 0L;
 
-#if defined( VGUI_USEKEYBINDINGMAPS )
 	m_hKeyBindingsContext = INVALID_KEYBINDINGCONTEXT_HANDLE;
-#endif
 
 	REGISTER_COLOR_AS_OVERRIDABLE( _fgColor, "fgcolor_override" );
 	REGISTER_COLOR_AS_OVERRIDABLE( _bgColor, "bgcolor_override" );
@@ -776,12 +768,10 @@ Panel::~Panel()
 			delete m_pTooltips;
 		}
 	}
-#if defined( VGUI_USEKEYBINDINGMAPS )
 	if ( IsValidKeyBindingsContext() )
 	{
 		g_KBMgr.OnPanelDeleted( m_hKeyBindingsContext, this );
 	}
-#endif // VGUI_USEKEYBINDINGMAPS
 #if defined( VGUI_USEDRAGDROP )
 	if ( m_pDragDrop->m_bDragging )
 	{
@@ -2130,7 +2120,6 @@ void Panel::InternalKeyCodePressed(int code)
 	}
 }
 
-#if defined( VGUI_USEKEYBINDINGMAPS )
 //-----------------------------------------------------------------------------
 // Purpose: 
 // Input  : *bindingName - 
@@ -2756,7 +2745,6 @@ bool Panel::IsKeyRebound( KeyCode code, int modifiers )
 }
 
 static bool s_bSuppressRebindChecks = false;
-#endif // VGUI_USEKEYBINDINGMAPS
 
 void Panel::InternalKeyCodeTyped( int code )
 {
@@ -8505,7 +8493,6 @@ PanelMessageMap *CPanelMessageMapDictionary::FindOrAddPanelMessageMap( char cons
 }
 #include <tier0/memdbgon.h>
 
-#if defined( VGUI_USEKEYBINDINGMAPS )
 //-----------------------------------------------------------------------------
 // Purpose: Utility class for handling keybinding map allocation
 //-----------------------------------------------------------------------------
@@ -8581,7 +8568,6 @@ CPanelKeyBindingMapDictionary& GetPanelKeyBindingMapDictionary()
 	return dictionary;
 }
 
-#endif // VGUI_USEKEYBINDINGMAPS
 
 CPanelMessageMapDictionary& GetPanelMessageMapDictionary()
 {
@@ -8608,7 +8594,6 @@ namespace vgui
 		return GetPanelMessageMapDictionary().FindPanelMessageMap( className );
 	}
 
-#if defined( VGUI_USEKEYBINDINGMAPS )
 	CPanelKeyBindingMapDictionary& GetPanelKeyBindingMapDictionary()
 	{
 		static CPanelKeyBindingMapDictionary dictionary;
@@ -8629,7 +8614,6 @@ namespace vgui
 	{
 		return GetPanelKeyBindingMapDictionary().FindPanelKeyBindingMap( className );
 	}
-#endif // VGUI_USEKEYBINDINGMAPS
 
 SortedPanel_t::SortedPanel_t( Panel *panel )
 {
