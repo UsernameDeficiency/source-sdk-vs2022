@@ -2,9 +2,7 @@ IsPC
 VECTOR_NO_SLOW_OPERATIONS
 
 Xbox
-	CHudTexture::Precache (360 only)
 	IN_XBOX_CODELINE, XBOX_CODELINE_ONLY, xbox_codeline_defines.h
-	#define XBOX_*
 	$X360
 
 Byt t.ex. isPC till compile time?
@@ -12,8 +10,6 @@ Byt t.ex. isPC till compile time?
 Kör Code Analysis och t.ex. cppcheck
 
 Move custom values (movement, weapons, suit power...) into some centralized settings file
-
-utlbuffer.cpp (618) : Assertion Failed: maxLenInChars != 0
 
 Cvars:
 	auto_bhop
